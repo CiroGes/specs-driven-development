@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "hello": "tsx src/app.ts",
+    "random-calc": "tsx -e \"import { runRandomIntegerCalculatorFeature } from './src/features/random-integer-calculator/index.js'; console.log(runRandomIntegerCalculatorFeature())\"",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",

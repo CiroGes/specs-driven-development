@@ -32,8 +32,11 @@ Se necesita una feature mínima que genere dos enteros aleatorios, los sume y mu
 ## Traceability
 - Spec tasks: `specs/features/random-integer-calculator/tasks.md`
 - Acceptance checks: `specs/features/random-integer-calculator/acceptance.md`
-- Implementation: `src/features/random-integer-calculator/...`
-- Tests: `tests/unit/...`, `tests/integration/...` (o equivalente según estructura del proyecto)
+- Implementation entrypoint: `src/features/random-integer-calculator/index.ts`
+- Service logic: `src/features/random-integer-calculator/random-integer-calculator.service.ts`
+- Controller (formato salida): `src/features/random-integer-calculator/random-integer-calculator.controller.js`
+- Unit tests: `tests/unit/random-integer-calculator.service.test.ts`
+- Integration tests: `tests/integration/random-integer-calculator.controller.test.ts`
 
 ## Planning notes (sdd-plan)
 - Orden de implementación: servicio TS (generación + suma) → controller/adapter (formato una línea) → index.ts → tests unitarios → tests integración → traceability.
