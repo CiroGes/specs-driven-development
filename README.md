@@ -124,6 +124,15 @@ It captures lessons learned and improvements to rules, templates, and commands.
 1. Run `sdd-init` for a new feature (for example `sum-two-integers-console`).
 2. Run `sdd-spec-create` and finish all mandatory spec sections.
 3. Run `sdd-plan` to produce an implementation-ready `tasks.md`.
-4. Run `sdd-implement` to build code and tests aligned with acceptance criteria.
+4. Run `sdd-implement` to build code and tests aligned with acceptance criteria.  
+   Recommended: include explicit inputs instead of invoking it with no context.
+   ```txt
+   /sdd-implement
+   Feature: random-integer-calculator
+   Use:
+   - specs/features/random-integer-calculator/feature.spec.md
+   - specs/features/random-integer-calculator/tasks.md
+   Implement only planned tasks and keep traceability updated.
+   ```
 5. Run `sdd-verify` to validate quality and traceability.
 6. Run `sdd-retro` to record improvements for the next feature.
