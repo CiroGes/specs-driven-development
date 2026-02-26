@@ -1,12 +1,25 @@
 # Specs-Driven Development Skeleton
 
-Minimal "hello world" starter for specs-driven development with:
+Specs-Driven Development (SDD) is a workflow where implementation starts from explicit, versioned specifications instead of ad-hoc coding decisions.
+
+In AI-assisted teams this is especially useful because sessions can reset, context can drift, and different contributors can get different outputs for the same request.
+SDD reduces that variability by making the source of truth explicit and traceable.
+
+Why this matters:
+- Shared understanding before coding (`what` and `why`)
+- Consistent execution standards (`how`)
+- Clear traceability from spec -> plan -> code -> tests -> retro
+- Lower rework and easier review
+
+## Minimal "hello world" starter for specs-driven development with:
 
 - Node.js ESM
 - Hybrid TypeScript + JavaScript
 - Vitest
 - Cursor rules and commands
 - Repo-local Codex-style skills
+- Product PRD + reusable PRD template
+- Minimal MCP server for structured context bundles
 
 ## Project Flow
 
