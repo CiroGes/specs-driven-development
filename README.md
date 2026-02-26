@@ -34,6 +34,10 @@ Minimal "hello world" starter for specs-driven development with:
 - `tests/`: unit and integration tests
 - `scripts/`: lightweight SDD validation scripts
 
+## Storytelling
+
+- [SDD Storytelling: random-integer-calculator](docs/sdd-storytelling-random-integer-calculator.md) — recommended reading to better understand the end-to-end workflow in practice.
+
 ## Feature Delivery Checklist (SDD)
 
 Use this checklist for every new feature.
