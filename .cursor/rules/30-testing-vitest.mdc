@@ -1,0 +1,10 @@
+---
+description: Testing rules with Vitest.
+alwaysApply: true
+---
+# Testing With Vitest
+
+- Unit tests should target pure logic first.
+- Integration tests should validate flow across adapters and feature entrypoints.
+- Acceptance criteria from specs must map to test cases.
+- New feature work is not complete without tests for success and edge cases.

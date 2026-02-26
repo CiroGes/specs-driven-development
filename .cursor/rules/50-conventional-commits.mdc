@@ -1,0 +1,31 @@
+---
+description: Enforce Conventional Commits for all commit messages.
+alwaysApply: true
+---
+# Conventional Commits Policy
+
+- All commit messages must follow: `<type>(<scope>): <description>`
+- Scope is optional: `<type>: <description>`
+- Description must be imperative, concise, and lowercase (except acronyms).
+
+## Allowed Types
+
+- `feat`: new functionality
+- `fix`: bug fix
+- `docs`: documentation changes
+- `refactor`: internal code changes without behavior changes
+- `test`: test additions/changes
+- `chore`: maintenance and tooling
+- `build`: build/dependency changes
+- `ci`: CI/CD changes
+- `perf`: performance improvements
+
+## Breaking Changes
+
+- Use `!` after type/scope when breaking: `feat(api)!: change response format`
+- Or include footer: `BREAKING CHANGE: <details>`
+
+## Initial Commit Guidance
+
+- Prefer: `chore(init): bootstrap specs-driven development skeleton`
+- If initial commit introduces end-user functionality, `feat(init): ...` is acceptable.

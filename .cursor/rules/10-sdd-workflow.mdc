@@ -1,0 +1,11 @@
+---
+description: Enforces specs-driven workflow phases.
+alwaysApply: true
+---
+# SDD Workflow
+
+1. Create or update `feature.spec.md` before implementation.
+2. Break the feature into actionable tasks in `tasks.md`.
+3. Implement code in `src/features/<feature>/`.
+4. Validate acceptance in tests and `acceptance.md`.
+5. Keep traceability links updated between spec, code, and tests.

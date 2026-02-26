@@ -1,0 +1,10 @@
+---
+description: Lightweight Git discipline for this repository.
+alwaysApply: true
+---
+# Git Practices
+
+- Commit in small, reviewable increments.
+- Keep commit messages explicit about spec, code, or test impact.
+- Do not mix unrelated features in a single commit.
+- Keep `specs/`, `src/`, and `tests/` aligned within the same branch.
