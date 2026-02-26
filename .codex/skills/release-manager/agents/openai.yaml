@@ -1,0 +1,5 @@
+version: 1
+interface:
+  display_name: Release Manager
+  short_description: Automates version bump, changelog update, tag creation, and GitHub release publishing.
+  default_prompt: Prepare and publish a release from conventional commits, including version bump, changelog entry, tag, and GitHub release.
