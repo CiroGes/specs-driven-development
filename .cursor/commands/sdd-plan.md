@@ -9,6 +9,9 @@
 - `tasks.md` with ordered implementation tasks
 - Identified risks and dependencies
 
+## Convention (from retro)
+- For features where **acceptance requires manual CLI verification**, include an explicit task: add or reuse a project script for manual verification and document the command in `acceptance.md`. This avoids ambiguity in sdd-implement and aligns plan with acceptance done criteria.
+
 ## Done Criteria
 - Tasks are executable without hidden decisions
 - Each task references expected files under `src/` or `tests/`
