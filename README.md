@@ -23,6 +23,8 @@ Minimal "hello world" starter for specs-driven development with:
 - `npm run lint`
 - `npm run validate:specs`
 - `npm run map:specs`
+- `npm run mcp:start`
+- `npm run mcp:self-check`
 
 ## Repository Structure
 
@@ -37,6 +39,10 @@ Minimal "hello world" starter for specs-driven development with:
 ## Storytelling
 
 - [SDD Storytelling: random-integer-calculator](docs/sdd-storytelling-random-integer-calculator.md) — recommended reading to better understand the end-to-end workflow in practice.
+
+## MCP
+
+- [MCP minimal setup](docs/mcp-minimal.md) — explains how this repository exposes PRD, rules, and feature specs as structured MCP context, including context-bundle tools.
 
 ## Product PRD
 
