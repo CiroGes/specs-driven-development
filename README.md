@@ -38,6 +38,11 @@ Minimal "hello world" starter for specs-driven development with:
 
 - [SDD Storytelling: random-integer-calculator](docs/sdd-storytelling-random-integer-calculator.md) — recommended reading to better understand the end-to-end workflow in practice.
 
+## Product PRD
+
+- [Product PRD (current project)](docs/product-prd.md) — global product requirements document for this repository. It defines vision, goals, scope, constraints, risks, and cross-feature traceability.
+- [Product PRD template](specs/templates/product-prd.template.md) — reusable template to bootstrap a PRD in other projects or products following the same structure.
+
 ## Feature Delivery Checklist (SDD)
 
 Use this checklist for every new feature.
