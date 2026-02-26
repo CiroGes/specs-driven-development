@@ -34,3 +34,8 @@ Se necesita una feature mínima que genere dos enteros aleatorios, los sume y mu
 - Acceptance checks: `specs/features/random-integer-calculator/acceptance.md`
 - Implementation: `src/features/random-integer-calculator/...`
 - Tests: `tests/unit/...`, `tests/integration/...` (o equivalente según estructura del proyecto)
+
+## Planning notes (sdd-plan)
+- Orden de implementación: servicio TS (generación + suma) → controller/adapter (formato una línea) → index.ts → tests unitarios → tests integración → traceability.
+- Riesgo: aleatoriedad en tests; validar rango y formato en múltiples runs o parseando la línea en integración.
+- Contrato salida: spec pide "imprimir" una línea; decidir en implementación si `console.log` en adapter/entrypoint o retorno de string.
