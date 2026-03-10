@@ -53,6 +53,7 @@ if (specPaths.length === 0) {
 }
 
 const allMissing = [];
+const specsWithNoTraceablePaths = [];
 let totalTraceablePaths = 0;
 
 for (const specPath of specPaths) {
@@ -63,6 +64,10 @@ for (const specPath of specPaths) {
   const traceablePaths = pathMatches.filter(isConcreteRepoPath);
 
   totalTraceablePaths += traceablePaths.length;
+
+  if (traceablePaths.length === 0) {
+    specsWithNoTraceablePaths.push(specPath);
+  }
 
   for (const path of traceablePaths) {
     if (!existsSync(path)) {
@@ -77,6 +82,13 @@ if (allMissing.length > 0) {
     console.error(`- ${item.path} (referenced in ${item.specPath})`);
   }
   process.exit(1);
+}
+
+if (specsWithNoTraceablePaths.length > 0) {
+  console.warn("Warning: no traceable paths found in:");
+  for (const specPath of specsWithNoTraceablePaths) {
+    console.warn(`- ${specPath}`);
+  }
 }
 
 console.log(
