@@ -10,21 +10,41 @@ const REQUIRED_SECTION_TITLES = [
   "Traceability",
 ];
 
-function parseFeatureArg(argv) {
+function parseArgs(argv) {
+  const options = {
+    feature: null,
+    featuresDir: "specs/features",
+  };
+
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--feature" || arg === "-f") {
-      return argv[index + 1];
+      options.feature = argv[index + 1] ?? null;
+      index += 1;
+      continue;
     }
     if (arg.startsWith("--feature=")) {
-      return arg.slice("--feature=".length);
+      options.feature = arg.slice("--feature=".length);
+      continue;
+    }
+    if (arg === "--features-dir") {
+      options.featuresDir = argv[index + 1] ?? options.featuresDir;
+      index += 1;
+      continue;
+    }
+    if (arg.startsWith("--features-dir=")) {
+      options.featuresDir = arg.slice("--features-dir=".length);
+      continue;
+    }
+    if (!arg.startsWith("-") && !options.feature) {
+      options.feature = arg;
     }
   }
-  return argv[0];
+
+  return options;
 }
 
-function listFeatureRoots() {
-  const featuresDir = "specs/features";
+function listFeatureRoots(featuresDir) {
   if (!existsSync(featuresDir)) {
     return [];
   }
@@ -44,10 +64,10 @@ function hasRequiredSection(specContent, title) {
   return sectionPattern.test(specContent);
 }
 
-const feature = parseFeatureArg(process.argv.slice(2));
+const { feature, featuresDir } = parseArgs(process.argv.slice(2));
 const featureRoots = feature
-  ? [`specs/features/${feature}`]
-  : listFeatureRoots();
+  ? [`${featuresDir}/${feature}`]
+  : listFeatureRoots(featuresDir);
 
 if (feature && !existsSync(featureRoots[0])) {
   console.error(`Feature folder not found: ${featureRoots[0]}`);
@@ -55,7 +75,7 @@ if (feature && !existsSync(featureRoots[0])) {
 }
 
 if (featureRoots.length === 0) {
-  console.error("No feature folders found under specs/features/*");
+  console.error(`No feature folders found under ${featuresDir}/*`);
   process.exit(1);
 }
 

@@ -4,17 +4,18 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "hello": "tsx src/app.ts",
-    "random-calc": "tsx -e \"import { runRandomIntegerCalculatorFeature } from './src/features/random-integer-calculator/index.js'; console.log(runRandomIntegerCalculatorFeature())\"",
-    "mcp:start": "node mcp/sdd-context-server.mjs",
-    "mcp:self-check": "node mcp/sdd-context-server.mjs --self-check",
+    "install:skeleton": "node scripts/install-sdd-skeleton.mjs",
+    "example:hello": "tsx examples/sdd-demo/src/app.ts",
+    "example:random-calc": "tsx -e \"import { runRandomIntegerCalculatorFeature } from './examples/sdd-demo/src/features/random-integer-calculator/index.js'; console.log(runRandomIntegerCalculatorFeature())\"",
+    "mcp:start": "node mcp/sdd-context-server.mjs --features-dir=examples/sdd-demo/specs/features",
+    "mcp:self-check": "node mcp/sdd-context-server.mjs --self-check --features-dir=examples/sdd-demo/specs/features",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "validate:specs": "node scripts/validate-spec-structure.mjs",
-    "map:specs": "node scripts/map-spec-to-code.mjs"
+    "validate:specs": "node scripts/validate-spec-structure.mjs --features-dir=examples/sdd-demo/specs/features",
+    "map:specs": "node scripts/map-spec-to-code.mjs --features-dir=examples/sdd-demo/specs/features"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",

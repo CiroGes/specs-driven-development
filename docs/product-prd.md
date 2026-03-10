@@ -121,6 +121,6 @@ Provide a practical starter repository that standardizes SDD execution with reus
 - Skills: `.codex/skills/`
 - Specs: `specs/features/`
 - Example features:
-  - `specs/features/hello-world/`
-  - `specs/features/random-integer-calculator/`
-- Storytelling: `docs/sdd-storytelling-random-integer-calculator.md`
+  - `examples/sdd-demo/specs/features/hello-world/`
+  - `examples/sdd-demo/specs/features/random-integer-calculator/`
+- Storytelling: `examples/sdd-demo/docs/sdd-storytelling-random-integer-calculator.md`

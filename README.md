@@ -30,7 +30,9 @@ Why this matters:
 
 ## Commands
 
-- `npm run hello`
+- `npm run install:skeleton -- --target ../my-project`
+- `npm run example:hello`
+- `npm run example:random-calc`
 - `npm run test`
 - `npm run typecheck`
 - `npm run lint`
@@ -44,14 +46,15 @@ Why this matters:
 - `.cursor/rules`: Cursor behavior constraints and conventions
 - `.cursor/commands`: guided commands for SDD workflow
 - `.codex/skills`: reusable skills for spec authoring and implementation
-- `specs/`: templates and feature specs
-- `src/`: feature-first implementation
-- `tests/`: unit and integration tests
+- `examples/sdd-demo/`: self-contained demo project with example specs, code, tests, and storytelling
+- `specs/`: reusable templates for new projects
+- `src/`: core repository code that is not part of the demo project
+- `tests/`: root-level tests when the skeleton itself needs them
 - `scripts/`: lightweight SDD validation scripts
 
 ## Storytelling
 
-- [SDD Storytelling: random-integer-calculator](docs/sdd-storytelling-random-integer-calculator.md) — recommended reading to better understand the end-to-end workflow in practice.
+- [SDD Storytelling: random-integer-calculator](examples/sdd-demo/docs/sdd-storytelling-random-integer-calculator.md) — recommended reading to better understand the end-to-end workflow in practice.
 
 ## MCP
 
@@ -61,6 +64,30 @@ Why this matters:
 
 - [Product PRD (current project)](docs/product-prd.md) — global product requirements document for this repository. It defines vision, goals, scope, constraints, risks, and cross-feature traceability.
 - [Product PRD template](specs/templates/product-prd.template.md) — reusable template to bootstrap a PRD in other projects or products following the same structure.
+
+## Bootstrap Another Project
+
+Use the installer to copy only the reusable SDD skeleton into another repository.
+
+- Core skeleton only:
+  - `npm run install:skeleton -- --target ../my-project`
+- Include the example features too:
+  - `npm run install:skeleton -- --target ../my-project --with-examples`
+
+What gets installed by default:
+- Cursor commands, rules, and MCP wiring
+- Codex skills
+- MCP server
+- SDD scripts and templates
+- TypeScript, ESLint, and Vitest config
+- SDD-related `package.json` scripts and devDependencies
+- `docs/product-prd.md` generated from the PRD template if it does not already exist
+
+The installer is conservative by default:
+- It does not overwrite existing files unless you pass `--force`
+- It merges `package.json` and skips conflicting scripts/dependencies with a warning
+
+In this repository, the bundled demo project lives under `examples/sdd-demo/`. The local `validate:specs`, `map:specs`, `mcp:start`, and `mcp:self-check` scripts are wired to that example tree. Installed projects still receive the default root-level commands for `specs/features/`, `src/`, and `tests/`.
 
 ## Feature Delivery Checklist (SDD)
 
@@ -158,8 +185,8 @@ It captures lessons learned and improvements to rules, templates, and commands.
    /sdd-implement
    Feature: random-integer-calculator
    Use:
-   - specs/features/random-integer-calculator/feature.spec.md
-   - specs/features/random-integer-calculator/tasks.md
+   - examples/sdd-demo/specs/features/random-integer-calculator/feature.spec.md
+   - examples/sdd-demo/specs/features/random-integer-calculator/tasks.md
    Implement only planned tasks and keep traceability updated.
    ```
 5. Run `sdd-verify` to validate quality and traceability.

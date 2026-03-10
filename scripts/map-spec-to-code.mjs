@@ -1,20 +1,41 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
+import path from "node:path";
 
-function parseFeatureArg(argv) {
+function parseArgs(argv) {
+  const options = {
+    feature: null,
+    featuresDir: "specs/features",
+  };
+
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--feature" || arg === "-f") {
-      return argv[index + 1];
+      options.feature = argv[index + 1] ?? null;
+      index += 1;
+      continue;
     }
     if (arg.startsWith("--feature=")) {
-      return arg.slice("--feature=".length);
+      options.feature = arg.slice("--feature=".length);
+      continue;
+    }
+    if (arg === "--features-dir") {
+      options.featuresDir = argv[index + 1] ?? options.featuresDir;
+      index += 1;
+      continue;
+    }
+    if (arg.startsWith("--features-dir=")) {
+      options.featuresDir = arg.slice("--features-dir=".length);
+      continue;
+    }
+    if (!arg.startsWith("-") && !options.feature) {
+      options.feature = arg;
     }
   }
-  return argv[0];
+
+  return options;
 }
 
-function listFeatureSpecPaths() {
-  const featuresDir = "specs/features";
+function listFeatureSpecPaths(featuresDir) {
   if (!existsSync(featuresDir)) {
     return [];
   }
@@ -35,10 +56,28 @@ function isConcreteRepoPath(value) {
   );
 }
 
-const feature = parseFeatureArg(process.argv.slice(2));
+function deriveProjectRoot(featuresDir) {
+  const normalizedPath = path.posix.normalize(
+    featuresDir.split(path.sep).join(path.posix.sep)
+  );
+  const suffix = "/specs/features";
+
+  if (normalizedPath === "specs/features") {
+    return ".";
+  }
+  if (normalizedPath.endsWith(suffix)) {
+    const projectRoot = normalizedPath.slice(0, -suffix.length);
+    return projectRoot.length > 0 ? projectRoot : ".";
+  }
+
+  return ".";
+}
+
+const { feature, featuresDir } = parseArgs(process.argv.slice(2));
+const projectRoot = deriveProjectRoot(featuresDir);
 const specPaths = feature
-  ? [`specs/features/${feature}/feature.spec.md`]
-  : listFeatureSpecPaths();
+  ? [`${featuresDir}/${feature}/feature.spec.md`]
+  : listFeatureSpecPaths(featuresDir);
 
 if (feature && !existsSync(specPaths[0])) {
   console.error(`Feature spec not found: ${specPaths[0]}`);
@@ -69,9 +108,10 @@ for (const specPath of specPaths) {
     specsWithNoTraceablePaths.push(specPath);
   }
 
-  for (const path of traceablePaths) {
-    if (!existsSync(path)) {
-      allMissing.push({ specPath, path });
+  for (const traceablePath of traceablePaths) {
+    const absolutePath = path.join(projectRoot, traceablePath);
+    if (!existsSync(absolutePath)) {
+      allMissing.push({ specPath, path: traceablePath });
     }
   }
 }

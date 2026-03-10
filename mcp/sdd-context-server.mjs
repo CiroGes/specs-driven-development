@@ -6,10 +6,30 @@ import * as z from "zod/v4";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
+function getCliOption(name) {
+  const flag = `--${name}`;
+  const prefixedFlag = `${flag}=`;
+
+  for (let index = 0; index < process.argv.length; index += 1) {
+    const arg = process.argv[index];
+    if (arg === flag) {
+      return process.argv[index + 1] ?? null;
+    }
+    if (arg.startsWith(prefixedFlag)) {
+      return arg.slice(prefixedFlag.length);
+    }
+  }
+
+  return null;
+}
+
 const REPO_ROOT = process.cwd();
 const PRODUCT_PRD_PATH = "docs/product-prd.md";
 const RULES_DIR = ".cursor/rules";
-const FEATURES_DIR = "specs/features";
+const FEATURES_DIR =
+  getCliOption("features-dir") ||
+  process.env.SDD_FEATURES_DIR ||
+  "specs/features";
 const SKILL_DIRS = [".codex/skills", ".agents/skills"];
 
 function resolvePath(relativePath) {

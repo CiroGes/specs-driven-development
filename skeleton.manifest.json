@@ -1,0 +1,106 @@
+{
+  "copy": [
+    ".cursor/commands",
+    ".cursor/rules",
+    ".cursor/mcp.json",
+    ".codex/skills",
+    "docs/conventions.md",
+    "docs/mcp-minimal.md",
+    "docs/sdd-lifecycle.md",
+    "eslint.config.mjs",
+    "mcp",
+    "scripts/install-sdd-skeleton.mjs",
+    "scripts/map-spec-to-code.mjs",
+    "scripts/validate-spec-structure.mjs",
+    "skeleton.manifest.json",
+    "specs/templates",
+    "tsconfig.json",
+    "vitest.config.ts"
+  ],
+  "generate": [
+    {
+      "source": "specs/templates/product-prd.template.md",
+      "target": "docs/product-prd.md"
+    }
+  ],
+  "packageJson": {
+    "type": "module",
+    "scripts": {
+      "mcp:start": "node mcp/sdd-context-server.mjs",
+      "mcp:self-check": "node mcp/sdd-context-server.mjs --self-check",
+      "test": "vitest run",
+      "test:watch": "vitest",
+      "typecheck": "tsc --noEmit",
+      "lint": "eslint .",
+      "lint:fix": "eslint . --fix",
+      "validate:specs": "node scripts/validate-spec-structure.mjs",
+      "map:specs": "node scripts/map-spec-to-code.mjs"
+    },
+    "devDependencies": {
+      "@eslint/js": "^9.20.0",
+      "@modelcontextprotocol/sdk": "^1.27.1",
+      "@types/node": "^22.13.10",
+      "eslint": "^9.20.1",
+      "globals": "^15.15.0",
+      "tsx": "^4.19.2",
+      "typescript": "^5.7.3",
+      "typescript-eslint": "^8.23.0",
+      "vitest": "^3.0.7",
+      "zod": "^4.3.6"
+    }
+  },
+  "examples": {
+    "copy": [
+      {
+        "source": "examples/sdd-demo/docs/sdd-storytelling-random-integer-calculator.md",
+        "target": "docs/sdd-storytelling-random-integer-calculator.md"
+      },
+      {
+        "source": "examples/sdd-demo/specs/features/hello-world",
+        "target": "specs/features/hello-world"
+      },
+      {
+        "source": "examples/sdd-demo/specs/features/random-integer-calculator",
+        "target": "specs/features/random-integer-calculator"
+      },
+      {
+        "source": "examples/sdd-demo/src/app.ts",
+        "target": "src/app.ts"
+      },
+      {
+        "source": "examples/sdd-demo/src/features/hello-world",
+        "target": "src/features/hello-world"
+      },
+      {
+        "source": "examples/sdd-demo/src/features/random-integer-calculator",
+        "target": "src/features/random-integer-calculator"
+      },
+      {
+        "source": "examples/sdd-demo/src/shared/types/app.ts",
+        "target": "src/shared/types/app.ts"
+      },
+      {
+        "source": "examples/sdd-demo/tests/integration/hello-world.controller.test.ts",
+        "target": "tests/integration/hello-world.controller.test.ts"
+      },
+      {
+        "source": "examples/sdd-demo/tests/integration/random-integer-calculator.controller.test.ts",
+        "target": "tests/integration/random-integer-calculator.controller.test.ts"
+      },
+      {
+        "source": "examples/sdd-demo/tests/unit/hello-world.service.test.ts",
+        "target": "tests/unit/hello-world.service.test.ts"
+      },
+      {
+        "source": "examples/sdd-demo/tests/unit/random-integer-calculator.service.test.ts",
+        "target": "tests/unit/random-integer-calculator.service.test.ts"
+      }
+    ],
+    "packageJson": {
+      "scripts": {
+        "hello": "tsx src/app.ts",
+        "random-calc": "tsx -e \"import { runRandomIntegerCalculatorFeature } from './src/features/random-integer-calculator/index.js'; console.log(runRandomIntegerCalculatorFeature())\""
+      }
+    }
+  }
+}
