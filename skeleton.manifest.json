@@ -26,8 +26,8 @@
   "packageJson": {
     "type": "module",
     "scripts": {
-      "mcp:start": "node mcp/sdd-context-server.mjs",
-      "mcp:self-check": "node mcp/sdd-context-server.mjs --self-check",
+      "mcp:sdd-context:start": "node mcp/sdd-context-server.mjs",
+      "mcp:sdd-context:self-check": "node mcp/sdd-context-server.mjs --self-check",
       "test": "vitest run",
       "test:watch": "vitest",
       "typecheck": "tsc --noEmit",

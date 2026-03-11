@@ -19,9 +19,11 @@ This project includes a minimal MCP server to provide structured context to agen
 ## Local usage
 
 - Start MCP server over stdio:
-  - `npm run mcp:start`
+  - `npm run mcp:sdd-context:start`
 - Validate setup:
-  - `npm run mcp:self-check`
+  - `npm run mcp:sdd-context:self-check`
+
+These script names are intentionally namespaced. Real projects often add multiple MCP servers, so avoiding generic names like `mcp:start` reduces collisions in `package.json`.
 
 ## Cursor wiring
 

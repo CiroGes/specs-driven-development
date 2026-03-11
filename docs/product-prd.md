@@ -61,12 +61,14 @@ Provide a practical starter repository that standardizes SDD execution with reus
 - Must define operational rules under `.cursor/rules/`.
 - Must define command workflows under `.cursor/commands/`.
 - Must provide at least one end-to-end example feature.
+- Must namespace skeleton-owned npm scripts when they represent optional subsystems such as MCP servers, to avoid collisions with project-specific tooling.
 - Must support conventional commits and release automation.
 
 ### Non-functional requirements
 - Developer experience: simple local setup with npm scripts.
 - Maintainability: clear file structure and low cognitive overhead.
 - Reliability: deterministic checks for structure and traceability.
+- Interoperability: skeleton defaults must coexist with project-specific MCP servers and automation without forcing script renames.
 - Auditability: changes and process decisions tracked in git.
 
 ## 7. Constraints and Assumptions
@@ -103,6 +105,8 @@ Provide a practical starter repository that standardizes SDD execution with reus
   - Mitigation: mandatory `validate:specs` and `map:specs` checks.
 - Risk: inconsistent release artifacts.
   - Mitigation: `release-manager` skill and scripted release workflow.
+- Risk: generic skeleton script names collide with project-specific tooling.
+  - Mitigation: namespace subsystem scripts such as `mcp:sdd-context:*` and keep `.cursor/mcp.json` wired directly to the server command.
 
 ## 10. Rollout Plan
 - Milestone 1: skeleton and baseline workflow (completed).

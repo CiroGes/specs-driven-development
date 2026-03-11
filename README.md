@@ -31,15 +31,17 @@ Why this matters:
 ## Commands
 
 - `npm run install:skeleton -- --target ../my-project`
+- `npm run hello`
+- `npm run random-calc`
 - `npm run example:hello`
 - `npm run example:random-calc`
+- `npm run mcp:sdd-context:start`
+- `npm run mcp:sdd-context:self-check`
 - `npm run test`
 - `npm run typecheck`
 - `npm run lint`
 - `npm run validate:specs`
 - `npm run map:specs`
-- `npm run mcp:start`
-- `npm run mcp:self-check`
 
 ## Repository Structure
 
@@ -87,7 +89,9 @@ The installer is conservative by default:
 - It does not overwrite existing files unless you pass `--force`
 - It merges `package.json` and skips conflicting scripts/dependencies with a warning
 
-In this repository, the bundled demo project lives under `examples/sdd-demo/`. The local `validate:specs`, `map:specs`, `mcp:start`, and `mcp:self-check` scripts are wired to that example tree. Installed projects still receive the default root-level commands for `specs/features/`, `src/`, and `tests/`.
+In this repository, the bundled demo project lives under `examples/sdd-demo/`. The local `validate:specs`, `map:specs`, `mcp:sdd-context:start`, and `mcp:sdd-context:self-check` scripts are wired to that example tree. Installed projects still receive the default root-level commands for `specs/features/`, `src/`, and `tests/`.
+
+The MCP scripts are intentionally namespaced under `mcp:sdd-context:*` to avoid colliding with unrelated MCP servers a real project may already define.
 
 ## Feature Delivery Checklist (SDD)
 
