@@ -23,10 +23,11 @@ Why this matters:
 
 ## Project Flow
 
-1. Write or update spec files in `specs/features/<feature>/`.
-2. Plan tasks from the spec.
-3. Implement feature code in `src/features/<feature>/`.
-4. Validate with tests and traceability checks.
+1. Define or update the product PRD in `docs/product-prd.md`.
+2. Write or update feature spec files in `specs/features/<feature>/`.
+3. Plan tasks from the feature spec.
+4. Implement feature code in `src/features/<feature>/`.
+5. Validate with tests and traceability checks.
 
 ## Commands
 
@@ -67,6 +68,13 @@ Why this matters:
 - [Product PRD (current project)](docs/product-prd.md) — global product requirements document for this repository. It defines vision, goals, scope, constraints, risks, and cross-feature traceability.
 - [Product PRD template](specs/templates/product-prd.template.md) — reusable template to bootstrap a PRD in other projects or products following the same structure.
 
+## Start Here
+
+If you are bootstrapping a real project, start with the PRD, not with `sdd-init`.
+
+- First define `docs/product-prd.md` from the PRD template.
+- Use `sdd-init` only after the product scope exists and you are ready to initialize a concrete feature under `specs/features/<feature>/`.
+
 ## Bootstrap Another Project
 
 Use the installer to copy only the reusable SDD skeleton into another repository.
@@ -96,6 +104,12 @@ The MCP scripts are intentionally namespaced under `mcp:sdd-context:*` to avoid 
 ## Feature Delivery Checklist (SDD)
 
 Use this checklist for every new feature.
+
+### 0) Product Definition
+
+- [ ] Create or update `docs/product-prd.md`
+- [ ] Confirm product goals, scope, constraints, and non-goals
+- [ ] Make sure the feature you are about to start is in bounds for the PRD
 
 ### 1) Spec
 
@@ -150,7 +164,7 @@ The files in `.cursor/commands/` are workflow guides for each SDD phase.
 
 ### `sdd-init`
 
-Use it when starting a new feature.
+Use it when starting a new feature after the PRD already exists.
 It defines the initial context (feature name, problem, constraints) and expects the first feature folder plus initial spec artifacts.
 
 ### `sdd-spec-create`
@@ -180,10 +194,11 @@ It captures lessons learned and improvements to rules, templates, and commands.
 
 ## Example Workflow With Cursor Commands
 
-1. Run `sdd-init` for a new feature (for example `sum-two-integers-console`).
-2. Run `sdd-spec-create` and finish all mandatory spec sections.
-3. Run `sdd-plan` to produce an implementation-ready `tasks.md`.
-4. Run `sdd-implement` to build code and tests aligned with acceptance criteria.  
+1. Create or update `docs/product-prd.md` from the PRD template.
+2. Run `sdd-init` for a new feature (for example `sum-two-integers-console`).
+3. Run `sdd-spec-create` and finish all mandatory spec sections.
+4. Run `sdd-plan` to produce an implementation-ready `tasks.md`.
+5. Run `sdd-implement` to build code and tests aligned with acceptance criteria.  
    Recommended: include explicit inputs instead of invoking it with no context.
    ```txt
    /sdd-implement
@@ -193,5 +208,5 @@ It captures lessons learned and improvements to rules, templates, and commands.
    - examples/sdd-demo/specs/features/random-integer-calculator/tasks.md
    Implement only planned tasks and keep traceability updated.
    ```
-5. Run `sdd-verify` to validate quality and traceability.
-6. Run `sdd-retro` to record improvements for the next feature.
+6. Run `sdd-verify` to validate quality and traceability.
+7. Run `sdd-retro` to record improvements for the next feature.

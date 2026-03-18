@@ -27,6 +27,7 @@ Provide a practical starter repository that standardizes SDD execution with reus
 - Unclear process ownership across delivery stages
 
 ### Jobs to be done
+- Define product scope before opening feature-level work.
 - Start a new feature with structure and constraints
 - Move from spec to implementation with clear handoffs
 - Validate and release work with predictable standards
@@ -57,6 +58,7 @@ Provide a practical starter repository that standardizes SDD execution with reus
 
 ## 6. Requirements
 ### Functional requirements
+- Must make `docs/product-prd.md` the first artifact to define when starting a new project.
 - Must support feature-first specs under `specs/features/`.
 - Must define operational rules under `.cursor/rules/`.
 - Must define command workflows under `.cursor/commands/`.
@@ -87,12 +89,13 @@ Provide a practical starter repository that standardizes SDD execution with reus
 
 ## 8. UX / User Flows
 ### Primary flow
-1. Initialize feature docs with `sdd-init`.
-2. Refine specification with `sdd-spec-create`.
-3. Build executable plan with `sdd-plan`.
-4. Implement code/tests with `sdd-implement`.
-5. Validate with `sdd-verify`.
-6. Capture improvements with `sdd-retro`.
+1. Define or update the product PRD in `docs/product-prd.md`.
+2. Initialize feature docs with `sdd-init`.
+3. Refine specification with `sdd-spec-create`.
+4. Build executable plan with `sdd-plan`.
+5. Implement code/tests with `sdd-implement`.
+6. Validate with `sdd-verify`.
+7. Capture improvements with `sdd-retro`.
 
 ### Edge flow
 - If spec is ambiguous, planning must block implementation until clarified.
