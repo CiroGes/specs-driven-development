@@ -1,8 +1,8 @@
 # Feature: spec-quality-gates
 
-> Status: spec-authoring phase — clarifications resolved, ready for `/sdd-plan`.
-> Acceptance criteria are written in EARS on purpose — this feature dogfoods the
-> very convention it introduces.
+> Status: implemented (phases 1-4). Acceptance criteria are written in EARS on
+> purpose — this feature dogfoods the very convention it introduces, and
+> `check-spec-coverage.mjs` reports it 14/14 covered.
 
 ## Context
 

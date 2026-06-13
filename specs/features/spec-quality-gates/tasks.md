@@ -29,74 +29,74 @@ contract. Implementation MUST follow it exactly:
 
 ### Phase 1 — Authoring convention (no script yet)
 
-- [ ] **T1.** Add the EARS acceptance-criteria convention to
+- [x] **T1.** Add the EARS acceptance-criteria convention to
   `specs/templates/feature.spec.template.md`: the `AC<n>` id format, the
   SHALL/SHALL NOT keyword, one-behavior-per-criterion, the no-soft-verb and
   no-compound rules, and Given/When/Then as an accepted alternative. (AC1, AC2,
   AC3, AC4)
-- [ ] **T2.** Add the `[NEEDS CLARIFICATION: <question>]` marker convention to the
+- [x] **T2.** Add the `[NEEDS CLARIFICATION: <question>]` marker convention to the
   same template (when to use it; that it must be plain prose, not code). (AC1, AC5)
-- [ ] **T3.** Make `specs/templates/tasks.template.md` reference `AC<n>` on tasks so
+- [x] **T3.** Make `specs/templates/tasks.template.md` reference `AC<n>` on tasks so
   the task→AC linkage is the default. (AC9)
-- [ ] **T4.** Write a short authoring guide `docs/spec-authoring.md` (EARS patterns
+- [x] **T4.** Write a short authoring guide `docs/spec-authoring.md` (EARS patterns
   + marker convention + the parsing contract above) and link it from `AGENTS.md`
   key documents. (AC1, AC5)
-- [ ] **T5.** Update the `spec-author` skill to teach EARS + markers, keeping
+- [x] **T5.** Update the `spec-author` skill to teach EARS + markers, keeping
   `.claude/skills/spec-author/` and `.agents/skills/spec-author/` in sync
   (SKILL.md + references). (AC1, AC2, AC5)
-- [ ] **T6.** Update `.claude/commands/sdd-spec-create.md`: require markers instead
+- [x] **T6.** Update `.claude/commands/sdd-spec-create.md`: require markers instead
   of invented answers, and instruct listing all open markers at end of run.
   (AC5, AC6)
 
 ### Phase 2 — Marker detection in validate:specs
 
-- [ ] **T7.** Extend `scripts/validate-spec-structure.mjs` to detect live
+- [x] **T7.** Extend `scripts/validate-spec-structure.mjs` to detect live
   `[NEEDS CLARIFICATION` markers per the parsing contract (strip code spans/fences
   first) and report each as a **non-blocking warning** (exit 0). (AC7, AC8)
-- [ ] **T8.** Add unit tests `tests/unit/validate-spec-structure.test.ts` covering:
-  marker in prose → warning; marker inside backticks/code fence → ignored; no
-  marker → clean. (AC7, AC8)
+- [x] **T8.** Add unit tests `tests/unit/spec-parsing.test.ts` (marker logic was
+  extracted to `scripts/lib/spec-parsing.mjs`): marker in prose → found; marker
+  inside backticks/code fence → ignored; no marker → clean. (AC7, AC8)
 
 ### Phase 3 — Coverage check script
 
-- [ ] **T9.** Implement `scripts/check-spec-coverage.mjs`: parse AC IDs
+- [x] **T9.** Implement `scripts/check-spec-coverage.mjs`: parse AC IDs
   (`feature.spec.md`), task→AC refs (`tasks.md`), and AC→verification rows
   (`acceptance.md`) per the parsing contract; print a per-AC coverage matrix
   (criterion → tasks → verification); accept `--features-dir`. (AC9)
-- [ ] **T10.** In the same script, mark an AC uncovered when it lacks a task ref or
+- [x] **T10.** In the same script, mark an AC uncovered when it lacks a task ref or
   a verification row, and flag tasks with no AC ref as orphan **warnings**.
   (AC10, AC11)
-- [ ] **T11.** Make the script exit non-zero if any AC is uncovered; exit 0 when
+- [x] **T11.** Make the script exit non-zero if any AC is uncovered; exit 0 when
   only orphan-task warnings exist. (AC13)
-- [ ] **T12.** Add `tests/unit/check-spec-coverage.test.ts`: fixtures for fully
+- [x] **T12.** Add `tests/unit/check-spec-coverage.test.ts`: fixtures for fully
   covered, missing-task, missing-verification, and orphan-task cases asserting
   matrix output and exit code. (AC9, AC10, AC11, AC13)
-- [ ] **T13.** Add the `coverage:specs` npm script (wired to the demo tree like
+- [x] **T13.** Add the `coverage:specs` npm script (wired to the demo tree like
   `validate:specs`/`map:specs`, i.e. `--features-dir=examples/sdd-demo/specs/features`)
   to `package.json` and to the installer manifest `skeleton.manifest.json`
   packageJson.scripts. (AC12)
 
 ### Phase 4 — Wire into verify + demo migration
 
-- [ ] **T14.** Update `.claude/commands/sdd-verify.md` to run `coverage:specs` as
+- [x] **T14.** Update `.claude/commands/sdd-verify.md` to run `coverage:specs` as
   part of the suite and to treat unresolved markers and uncovered criteria as
   failures (the blocking half of AC8). (AC8, AC12, AC13)
-- [ ] **T15.** Migrate `examples/sdd-demo/specs/features/random-integer-calculator/`
+- [x] **T15.** Migrate `examples/sdd-demo/specs/features/random-integer-calculator/`
   (feature.spec.md acceptance criteria → EARS + `AC<n>`; tasks.md → reference IDs;
   acceptance.md → AC column) and keep its existing tests mapped. (AC14)
-- [ ] **T16.** Migrate `examples/sdd-demo/specs/features/hello-world/` the same way.
+- [x] **T16.** Migrate `examples/sdd-demo/specs/features/hello-world/` the same way.
   (AC14)
-- [ ] **T17.** Run `npm run validate:specs`, `npm run map:specs`, and
+- [x] **T17.** Run `npm run validate:specs`, `npm run map:specs`, and
   `npm run coverage:specs` against the demo tree and confirm green end-to-end.
   (AC12, AC13, AC14)
 
 ### Phase 5 — Self-consistency
 
-- [ ] **T18.** Migrate this feature's own `acceptance.md`/`tasks.md` if the final ID
+- [x] **T18.** Migrate this feature's own `acceptance.md`/`tasks.md` if the final ID
   or table format differs from what was assumed, then run `coverage:specs
   --features-dir=specs/features` to confirm `spec-quality-gates` itself passes.
   (AC9, AC13)
-- [ ] **T19.** Final traceability pass: update `acceptance.md` here with the real
+- [x] **T19.** Final traceability pass: update `acceptance.md` here with the real
   test names produced in T8/T12. (AC9)
 
 ## Risks
