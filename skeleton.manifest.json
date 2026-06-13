@@ -6,10 +6,8 @@
     "AGENTS.md",
     "CLAUDE.md",
     "docs/conventions.md",
-    "docs/mcp-minimal.md",
     "docs/sdd-lifecycle.md",
     "eslint.config.mjs",
-    "mcp",
     "scripts/install-sdd-skeleton.mjs",
     "scripts/map-spec-to-code.mjs",
     "scripts/validate-spec-structure.mjs",
@@ -27,8 +25,6 @@
   "packageJson": {
     "type": "module",
     "scripts": {
-      "mcp:sdd-context:start": "node mcp/sdd-context-server.mjs",
-      "mcp:sdd-context:self-check": "node mcp/sdd-context-server.mjs --self-check",
       "test": "vitest run",
       "test:watch": "vitest",
       "typecheck": "tsc --noEmit",
@@ -39,15 +35,13 @@
     },
     "devDependencies": {
       "@eslint/js": "^9.20.0",
-      "@modelcontextprotocol/sdk": "^1.27.1",
       "@types/node": "^22.13.10",
       "eslint": "^9.20.1",
       "globals": "^15.15.0",
       "tsx": "^4.19.2",
       "typescript": "^5.7.3",
       "typescript-eslint": "^8.23.0",
-      "vitest": "^3.0.7",
-      "zod": "^4.3.6"
+      "vitest": "^3.0.7"
     }
   },
   "examples": {

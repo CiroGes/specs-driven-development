@@ -15,14 +15,12 @@ Key documents:
 - [docs/product-prd.md](docs/product-prd.md) — product PRD (the explicit starting point)
 - [docs/sdd-lifecycle.md](docs/sdd-lifecycle.md) — SDD lifecycle summary
 - [docs/conventions.md](docs/conventions.md) — folder/naming conventions
-- [docs/mcp-minimal.md](docs/mcp-minimal.md) — MCP context server notes
 - [README.md](README.md) — skeleton overview, installer, and scripts
 
 ## Repository Layout
 
 - `.claude/` — Claude Code adapter (`commands/`, `skills/`).
 - `.agents/skills/` — Codex-discoverable skills (`release-manager`, `spec-author`, `spec-implementer`).
-- `mcp/` — minimal MCP context server (`sdd-context-server.mjs`).
 - `src/features/<feature>/` — feature-first implementation.
 - `specs/features/<feature>/` — `feature.spec.md`, `tasks.md`, `acceptance.md`.
 - `specs/templates/` — canonical templates for specs, tasks, acceptance, ADR, PRD.
@@ -115,5 +113,5 @@ Initial commit guidance: prefer `chore(init): bootstrap specs-driven development
 ## Notes
 
 - Start from the PRD, not from `/sdd-init`: define `docs/product-prd.md` from the template before initializing a concrete feature.
-- The bundled demo project lives under `examples/sdd-demo/`; the local `validate:specs`, `map:specs`, and `mcp:sdd-context:*` scripts are wired to that example tree.
+- The bundled demo project lives under `examples/sdd-demo/`; the local `validate:specs` and `map:specs` scripts are wired to that example tree.
 - This repository is a distributable skeleton: `npm run install:skeleton -- --target ../my-project` copies the reusable adapters (`.claude/`, `.agents/skills/`, `AGENTS.md`) into another repo. Keep the Claude adapter (`.claude/`) and the Codex-discoverable skills (`.agents/skills/`) in sync when changing workflow commands or skills, and update `AGENTS.md` when operating rules change.

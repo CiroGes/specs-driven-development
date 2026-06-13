@@ -8,7 +8,7 @@ description: Draft a Conventional Commits message (feat|fix|docs|refactor|test|c
 
 - Commit purpose (what changed and why)
 - Commit type (`feat|fix|docs|refactor|test|chore|build|ci|perf`)
-- Optional scope (e.g. `init`, `specs`, `hello-world`, `mcp`)
+- Optional scope (e.g. `init`, `specs`, `hello-world`, `release`)
 - Breaking change? (`yes/no`)
 - Optional body bullets
 - Optional footer (`BREAKING CHANGE`, issue refs)

@@ -19,7 +19,6 @@ Why this matters:
 - Claude Code commands and skills (`.claude/` + `AGENTS.md`/`CLAUDE.md`)
 - Codex-discoverable skills (`.agents/skills/`) + `AGENTS.md`
 - Product PRD + reusable PRD template
-- Minimal MCP server for structured context bundles
 
 ## Project Flow
 
@@ -36,8 +35,6 @@ Why this matters:
 - `npm run random-calc`
 - `npm run example:hello`
 - `npm run example:random-calc`
-- `npm run mcp:sdd-context:start`
-- `npm run mcp:sdd-context:self-check`
 - `npm run test`
 - `npm run typecheck`
 - `npm run lint`
@@ -59,10 +56,6 @@ Why this matters:
 ## Storytelling
 
 - [SDD Storytelling: random-integer-calculator](examples/sdd-demo/docs/sdd-storytelling-random-integer-calculator.md) — recommended reading to better understand the end-to-end workflow in practice.
-
-## MCP
-
-- [MCP minimal setup](docs/mcp-minimal.md) — explains how this repository exposes the PRD and feature specs as structured MCP context, including context-bundle tools.
 
 ## Product PRD
 
@@ -88,7 +81,6 @@ Use the installer to copy only the reusable SDD skeleton into another repository
 What gets installed by default:
 - Claude Code commands and skills, plus `AGENTS.md`/`CLAUDE.md`
 - Codex-discoverable skills (`.agents/skills/`)
-- MCP server
 - SDD scripts and templates
 - TypeScript, ESLint, and Vitest config
 - SDD-related `package.json` scripts and devDependencies
@@ -98,9 +90,7 @@ The installer is conservative by default:
 - It does not overwrite existing files unless you pass `--force`
 - It merges `package.json` and skips conflicting scripts/dependencies with a warning
 
-In this repository, the bundled demo project lives under `examples/sdd-demo/`. The local `validate:specs`, `map:specs`, `mcp:sdd-context:start`, and `mcp:sdd-context:self-check` scripts are wired to that example tree. Installed projects still receive the default root-level commands for `specs/features/`, `src/`, and `tests/`.
-
-The MCP scripts are intentionally namespaced under `mcp:sdd-context:*` to avoid colliding with unrelated MCP servers a real project may already define.
+In this repository, the bundled demo project lives under `examples/sdd-demo/`. The local `validate:specs` and `map:specs` scripts are wired to that example tree. Installed projects still receive the default root-level commands for `specs/features/`, `src/`, and `tests/`.
 
 ## Feature Delivery Checklist (SDD)
 

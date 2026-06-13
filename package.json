@@ -9,8 +9,6 @@
     "random-calc": "npm run example:random-calc",
     "example:hello": "tsx examples/sdd-demo/src/app.ts",
     "example:random-calc": "tsx -e \"import { runRandomIntegerCalculatorFeature } from './examples/sdd-demo/src/features/random-integer-calculator/index.js'; console.log(runRandomIntegerCalculatorFeature())\"",
-    "mcp:sdd-context:start": "node mcp/sdd-context-server.mjs --features-dir=examples/sdd-demo/specs/features",
-    "mcp:sdd-context:self-check": "node mcp/sdd-context-server.mjs --self-check --features-dir=examples/sdd-demo/specs/features",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
@@ -21,14 +19,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
-    "@modelcontextprotocol/sdk": "^1.27.1",
     "@types/node": "^22.13.10",
     "eslint": "^9.20.1",
     "globals": "^15.15.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.23.0",
-    "vitest": "^3.0.7",
-    "zod": "^4.3.6"
+    "vitest": "^3.0.7"
   }
 }
