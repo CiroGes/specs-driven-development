@@ -24,10 +24,10 @@ Se necesita una feature mínima que genere dos enteros aleatorios, los sume y mu
 3. Los números generados son siempre válidos dentro del rango definido (2..200).
 
 ## Acceptance Criteria
-- Se generan dos enteros válidos en el rango definido (2..200).
-- La suma es correcta.
-- La salida es una sola línea con el formato exacto **`<a> + <b> = <c>`**.
-- Hay traceabilidad a src y tests (spec → tasks → implementation → tests documentada en esta spec y en acceptance).
+- **AC1** — The system SHALL generate two integers `a` and `b`, each in the inclusive range 2–200.
+- **AC2** — The system SHALL compute `c` as the sum of `a` and `b`.
+- **AC3** — WHEN the feature is invoked, the system SHALL output exactly one line formatted as `<a> + <b> = <c>`.
+- **AC4** — The feature SHALL keep traceability from spec to tasks, implementation, and tests.
 
 ## Traceability
 - Spec tasks: `specs/features/random-integer-calculator/tasks.md`

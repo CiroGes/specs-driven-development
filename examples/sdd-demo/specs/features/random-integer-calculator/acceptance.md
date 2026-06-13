@@ -2,17 +2,12 @@
 
 ## Criteria to Test Mapping
 
-1. Se generan dos enteros válidos en el rango definido (2..200)
-- Covered by: `tests/unit/random-integer-calculator.service.test.ts` (getTwoRandomOperands, computeRandomSum)
-
-2. La suma es correcta
-- Covered by: `tests/unit/random-integer-calculator.service.test.ts` (add, computeRandomSum)
-
-3. La salida es una sola línea con el formato exacto `<a> + <b> = <c>`
-- Covered by: `tests/integration/random-integer-calculator.controller.test.ts` (runRandomIntegerCalculatorFeature)
-
-4. Hay traceability a src y tests
-- Covered by: `specs/features/random-integer-calculator/feature.spec.md` (sección Traceability), `tasks.md`; implementación en `src/features/random-integer-calculator/`, tests en `tests/unit/` y `tests/integration/`
+| AC | Verification | Test / check |
+|----|--------------|--------------|
+| AC1 | auto | `tests/unit/random-integer-calculator.service.test.ts` (operands in 2..200) |
+| AC2 | auto | `tests/unit/random-integer-calculator.service.test.ts` (add / computeRandomSum) |
+| AC3 | auto | `tests/integration/random-integer-calculator.controller.test.ts` (one-line `<a> + <b> = <c>`) |
+| AC4 | inspect | feature.spec.md Traceability section + tasks.md → src/ and tests/ paths |
 
 ## Manual Verification
 - Ejecutar: `npm run random-calc`  

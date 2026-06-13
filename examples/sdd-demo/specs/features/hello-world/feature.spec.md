@@ -22,10 +22,10 @@ Teams need a concrete starter that enforces writing specs first, then implementa
 3. Surrounding spaces in input should be trimmed.
 
 ## Acceptance Criteria
-- Feature entrypoint returns a response with `status: "ok"`.
-- Message format is exactly `Hello, <name>!`.
-- Empty or missing name yields `Hello, World!`.
-- Unit and integration tests cover these rules.
+- **AC1** — The feature entrypoint SHALL return a response with `status: "ok"`.
+- **AC2** — The system SHALL format the greeting exactly as `Hello, <name>!`.
+- **AC3** — WHEN the name is empty or missing, the system SHALL return `Hello, World!`.
+- **AC4** — WHEN the name has surrounding spaces, the system SHALL trim them before formatting.
 
 ## Traceability
 - Spec tasks: `specs/features/hello-world/tasks.md`
