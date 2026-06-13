@@ -63,6 +63,20 @@ Suggested order. None started.
 - `[P]` parallel-task markers + dependency graph (Spec Kit/Kiro) — low value at
   small scale, adds notation.
 
+## Refinements / follow-ups
+
+Small improvements to already-delivered features (not full Tier-2 items):
+
+- **spec-quality-gates — marker detection vs. backticks.** A live
+  `[NEEDS CLARIFICATION]` marker that contains inline code (backticks) is mangled:
+  `stripCode` runs first and consumes part of the marker, so it is not reported.
+  Surfaced while dogfooding `agent-adapter-projection`. Fix options: state in the
+  convention that a live marker must not contain backticks, and/or make the
+  detector tolerant of inline code *inside* an otherwise-live marker. Low effort.
+- **spec-quality-gates — optional `--strict` for `validate:specs`.** Let
+  `validate:specs` fail (not just warn) on unresolved markers behind a flag, so the
+  `/sdd-verify` block can be enforced by script instead of command-level discretion.
+
 ## Notes
 
 - This file is intentionally **not** in `skeleton.manifest.json`: it documents the
