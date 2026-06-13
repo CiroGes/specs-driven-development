@@ -1,10 +1,6 @@
 {
   "copy": [
-    ".claude/commands",
-    ".claude/skills",
-    ".agents/skills",
     "AGENTS.md",
-    "CLAUDE.md",
     "docs/conventions.md",
     "docs/sdd-lifecycle.md",
     "docs/spec-authoring.md",

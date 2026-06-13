@@ -1,7 +1,13 @@
 // Pure helpers for projecting the canonical sdd/ source into per-agent adapters.
 // Logic lives here (testable); build-agent-adapters.mjs is the thin I/O wrapper.
 
-import { readFileSync, readdirSync, mkdirSync, writeFileSync } from "node:fs";
+import {
+  readFileSync,
+  readdirSync,
+  mkdirSync,
+  writeFileSync,
+  existsSync,
+} from "node:fs";
 import path from "node:path";
 
 export const ALL_AGENTS = ["claude", "codex", "opencode"];
@@ -120,11 +126,23 @@ export function buildPlan({ canonical, manifest, agents }) {
   return actions;
 }
 
-/** Execute a plan: write each action under targetDir, creating dirs as needed. */
-export function writeActions(actions, targetDir) {
+/**
+ * Execute a plan: write each action under targetDir, creating dirs as needed.
+ * With `force: false`, existing files are skipped (not overwritten).
+ * Returns { written, skipped } lists of relative paths.
+ */
+export function writeActions(actions, targetDir, { force = true } = {}) {
+  const written = [];
+  const skipped = [];
   for (const action of actions) {
     const full = path.join(targetDir, action.to);
+    if (!force && existsSync(full)) {
+      skipped.push(action.to);
+      continue;
+    }
     mkdirSync(path.dirname(full), { recursive: true });
     writeFileSync(full, action.content);
+    written.push(action.to);
   }
+  return { written, skipped };
 }

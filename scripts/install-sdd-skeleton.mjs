@@ -6,17 +6,22 @@ import {
   writeFileSync,
 } from "node:fs";
 import path from "node:path";
+import readline from "node:readline/promises";
 import { fileURLToPath } from "node:url";
+import { readCanonical, buildPlan, writeActions } from "./lib/agent-adapters.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(__filename), "..");
 const MANIFEST_PATH = path.join(REPO_ROOT, "skeleton.manifest.json");
+const SDD_DIR = path.join(REPO_ROOT, "sdd");
+const PROJECTION_MANIFEST_PATH = path.join(SDD_DIR, "agents.manifest.json");
 
 function parseArgs(argv) {
   const options = {
     force: false,
     target: null,
     withExamples: false,
+    agents: null,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -29,6 +34,17 @@ function parseArgs(argv) {
 
     if (arg === "--with-examples") {
       options.withExamples = true;
+      continue;
+    }
+
+    if (arg === "--agents") {
+      options.agents = argv[index + 1] ?? null;
+      index += 1;
+      continue;
+    }
+
+    if (arg.startsWith("--agents=")) {
+      options.agents = arg.slice("--agents=".length);
       continue;
     }
 
@@ -57,13 +73,57 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  console.log(`Usage: node scripts/install-sdd-skeleton.mjs --target <path> [--with-examples] [--force]
+  console.log(`Usage: node scripts/install-sdd-skeleton.mjs --target <path> [--agents <list>] [--with-examples] [--force]
 
 Options:
   --target, -t      Target repository path
+  --agents <list>   Comma-separated agents to set up (claude, codex, opencode).
+                    If omitted: prompt on an interactive terminal, else all.
   --with-examples   Also install example features and example npm scripts
   --force           Overwrite existing files and package.json keys
   --help, -h        Show this help message`);
+}
+
+function loadProjectionManifest() {
+  return JSON.parse(readFileSync(PROJECTION_MANIFEST_PATH, "utf8"));
+}
+
+async function resolveAgents(options, allAgents) {
+  if (options.agents) {
+    return options.agents.split(",").map((a) => a.trim()).filter(Boolean);
+  }
+  if (process.stdin.isTTY) {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    const answer = await rl.question(
+      `Which agents to set up? Comma-separated from [${allAgents.join(", ")}] (default: all): `
+    );
+    rl.close();
+    const trimmed = answer.trim();
+    if (!trimmed) return allAgents;
+    return trimmed.split(",").map((a) => a.trim()).filter(Boolean);
+  }
+  // Non-interactive with no flag: install all agents (backwards-compatible).
+  return allAgents;
+}
+
+function projectAgents(targetRoot, agents, force, warnings) {
+  const projectionManifest = loadProjectionManifest();
+  const allAgents = Object.keys(projectionManifest.agents);
+  const unknown = agents.filter((a) => !allAgents.includes(a));
+  if (unknown.length > 0) {
+    throw new Error(
+      `Unknown agent(s): ${unknown.join(", ")}. Known: ${allAgents.join(", ")}`
+    );
+  }
+  const canonical = readCanonical(SDD_DIR);
+  const plan = buildPlan({ canonical, manifest: projectionManifest, agents });
+  const { skipped } = writeActions(plan, targetRoot, { force });
+  for (const item of skipped) {
+    warnings.push(`Skipped existing adapter file "${item}"`);
+  }
 }
 
 function loadManifest() {
@@ -180,7 +240,7 @@ function mergePackageJson(targetRoot, manifestSection, force, warnings) {
   );
 }
 
-function main() {
+async function main() {
   try {
     const options = parseArgs(process.argv.slice(2));
     if (!options.target) {
@@ -190,13 +250,19 @@ function main() {
 
     const targetRoot = path.resolve(process.cwd(), options.target);
     const manifest = loadManifest();
+    const allAgents = Object.keys(loadProjectionManifest().agents);
+    const agents = await resolveAgents(options, allAgents);
     const warnings = [];
 
     ensureDir(targetRoot);
 
+    // Agent-agnostic assets (always installed).
     for (const entry of manifest.copy) {
       copyManifestEntry(entry, targetRoot, options.force);
     }
+
+    // Per-agent adapters (only the selected agents, projected from sdd/).
+    projectAgents(targetRoot, agents, options.force, warnings);
 
     for (const entry of manifest.generate ?? []) {
       const generated = generateEntry(
@@ -230,6 +296,7 @@ function main() {
     }
 
     console.log(`Installed SDD skeleton into ${targetRoot}`);
+    console.log(`Agents set up: ${agents.join(", ")}`);
     console.log(
       options.withExamples
         ? "Included: core skeleton and example features"
