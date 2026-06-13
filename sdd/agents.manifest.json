@@ -1,0 +1,18 @@
+{
+  "$comment": "Projection manifest: maps canonical sdd/ artifacts to each agent's adapter layout. Divergence is data here, not duplicated files. opencode also accepts the plural 'commands/' dir; 'command' is used for parity with the docs and is backwards-compatible.",
+  "agents": {
+    "claude": {
+      "commands": ".claude/commands",
+      "skills": ".claude/skills",
+      "root": { "CLAUDE.md": "@AGENTS.md\n" }
+    },
+    "codex": {
+      "skills": ".agents/skills",
+      "skillsOpenaiYaml": true
+    },
+    "opencode": {
+      "commands": ".opencode/command",
+      "skills": ".agents/skills"
+    }
+  }
+}
