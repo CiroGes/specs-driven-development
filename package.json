@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "validate:specs": "node scripts/validate-spec-structure.mjs --features-dir=examples/sdd-demo/specs/features",
-    "map:specs": "node scripts/map-spec-to-code.mjs --features-dir=examples/sdd-demo/specs/features"
+    "map:specs": "node scripts/map-spec-to-code.mjs --features-dir=examples/sdd-demo/specs/features",
+    "coverage:specs": "node scripts/check-spec-coverage.mjs --features-dir=examples/sdd-demo/specs/features"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",

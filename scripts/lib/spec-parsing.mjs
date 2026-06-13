@@ -26,3 +26,124 @@ export function findClarificationMarkers(text) {
   const matches = prose.match(/\[NEEDS CLARIFICATION\b[^\]]*\]/g);
   return matches ? matches.map((m) => m.trim()) : [];
 }
+
+/**
+ * Collect acceptance-criteria ids (AC<n>) declared in the `## Acceptance Criteria`
+ * section of a feature spec. An id is a bold `**AC<n>**` token inside that section.
+ * H3 subsections are kept; the section ends at the next H2.
+ * @param {string} specText
+ * @returns {string[]} unique ids in document order
+ */
+export function parseAcceptanceCriteriaIds(specText) {
+  const lines = specText.split("\n");
+  let inSection = false;
+  const body = [];
+  for (const line of lines) {
+    if (/^##\s+Acceptance Criteria\s*$/.test(line)) {
+      inSection = true;
+      continue;
+    }
+    if (inSection && /^##\s+/.test(line)) break;
+    if (inSection) body.push(line);
+  }
+  const ids = [...body.join("\n").matchAll(/\*\*(AC\d+)\*\*/g)].map((m) => m[1]);
+  return [...new Set(ids)];
+}
+
+/**
+ * Parse checkbox tasks from a tasks.md body. A task spans its checkbox line plus
+ * following continuation lines until the next checkbox or heading. Each task's
+ * AC references are any AC<n> tokens anywhere in that block.
+ * @param {string} tasksText
+ * @returns {{label: string, acRefs: string[]}[]}
+ */
+export function parseTasks(tasksText) {
+  const checkbox = /^\s*-\s*\[[ xX]\]\s+/;
+  const heading = /^#{1,6}\s/;
+  const blocks = [];
+  let current = null;
+  const flush = () => {
+    if (current) blocks.push(current);
+    current = null;
+  };
+  for (const line of tasksText.split("\n")) {
+    if (checkbox.test(line)) {
+      flush();
+      current = line;
+    } else if (heading.test(line)) {
+      flush();
+    } else if (current !== null) {
+      current += "\n" + line;
+    }
+  }
+  flush();
+  return blocks.map((text) => {
+    const firstLine = text.split("\n")[0];
+    const tid = (firstLine.match(/\bT\d+\b/) || [])[0];
+    const label = tid || firstLine.replace(checkbox, "").trim().slice(0, 40);
+    return { label, acRefs: [...new Set(text.match(/\bAC\d+\b/g) || [])] };
+  });
+}
+
+/**
+ * Read the AC->verification map from an acceptance.md table whose first column
+ * header is `AC`. Returns a Map of AC id -> array of declared verification kinds
+ * (e.g. "auto", "script", "inspect").
+ * @param {string} acceptanceText
+ * @returns {Map<string, string[]>}
+ */
+export function parseAcceptanceVerificationMap(acceptanceText) {
+  const declared = new Map();
+  let headerSeen = false;
+  for (const raw of acceptanceText.split("\n")) {
+    const line = raw.trim();
+    if (!line.startsWith("|")) {
+      headerSeen = false;
+      continue;
+    }
+    const cells = line.split("|").slice(1, -1).map((c) => c.trim());
+    if (cells.length === 0) continue;
+    if (!headerSeen) {
+      if (cells[0].toLowerCase() === "ac") headerSeen = true;
+      continue;
+    }
+    if (cells.every((c) => c === "" || /^:?-+:?$/.test(c))) continue;
+    const idMatch = cells[0].match(/\bAC\d+\b/);
+    const kind = (cells[1] || "").trim();
+    if (!idMatch || !kind) continue;
+    const list = declared.get(idMatch[0]) || [];
+    list.push(kind);
+    declared.set(idMatch[0], list);
+  }
+  return declared;
+}
+
+/**
+ * Compute spec coverage: each acceptance criterion is covered iff it is referenced
+ * by at least one task AND has at least one verification row in acceptance.md.
+ * Tasks with no AC reference are reported as orphans (non-blocking).
+ * @param {{specText: string, tasksText: string, acceptanceText: string}} input
+ */
+export function computeCoverage({ specText, tasksText, acceptanceText }) {
+  const acIds = parseAcceptanceCriteriaIds(specText);
+  const tasks = parseTasks(tasksText);
+  const verifMap = parseAcceptanceVerificationMap(acceptanceText);
+  const criteria = acIds.map((id) => {
+    const coveringTasks = tasks
+      .filter((t) => t.acRefs.includes(id))
+      .map((t) => t.label);
+    const verifications = verifMap.get(id) || [];
+    return {
+      id,
+      tasks: coveringTasks,
+      verifications,
+      covered: coveringTasks.length > 0 && verifications.length > 0,
+    };
+  });
+  return {
+    acIds,
+    criteria,
+    orphanTasks: tasks.filter((t) => t.acRefs.length === 0).map((t) => t.label),
+    uncovered: criteria.filter((c) => !c.covered).map((c) => c.id),
+  };
+}

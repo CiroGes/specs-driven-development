@@ -9,6 +9,7 @@
     "docs/sdd-lifecycle.md",
     "docs/spec-authoring.md",
     "eslint.config.mjs",
+    "scripts/check-spec-coverage.mjs",
     "scripts/install-sdd-skeleton.mjs",
     "scripts/lib",
     "scripts/map-spec-to-code.mjs",
@@ -33,7 +34,8 @@
       "lint": "eslint .",
       "lint:fix": "eslint . --fix",
       "validate:specs": "node scripts/validate-spec-structure.mjs",
-      "map:specs": "node scripts/map-spec-to-code.mjs"
+      "map:specs": "node scripts/map-spec-to-code.mjs",
+      "coverage:specs": "node scripts/check-spec-coverage.mjs"
     },
     "devDependencies": {
       "@eslint/js": "^9.20.0",
