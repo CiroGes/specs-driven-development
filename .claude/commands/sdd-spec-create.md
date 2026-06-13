@@ -12,10 +12,23 @@ description: Author or complete a feature.spec.md with required sections (Contex
 ## Expected Output
 - Complete `feature.spec.md` with required sections
 - Initial scenario list and acceptance criteria
+- A list of every open `[NEEDS CLARIFICATION]` marker at the end of the run
+
+## Convention
+- Write acceptance criteria in EARS with stable ids (`AC<n>`), one observable
+  behavior each, using SHALL/SHALL NOT (Given/When/Then allowed). No soft verbs,
+  no compound criteria. See [docs/spec-authoring.md](../../docs/spec-authoring.md).
+- When an input is missing, insert a `[NEEDS CLARIFICATION: <question>]` marker in
+  plain prose instead of inventing the answer. Do not wrap a live marker in
+  backticks.
+- Before finishing, scan the spec and list every open marker so the human can
+  resolve them. Resolved markers should be removed (and may be summarized in a
+  short "Clarifications (resolved)" note).
 
 ## Done Criteria
 - Spec includes Context, Problem, Goals, Non-Goals, Scenarios, Acceptance Criteria, Traceability
-- Acceptance criteria are testable
+- Acceptance criteria are in EARS with stable `AC<n>` ids and individually testable
+- Open `[NEEDS CLARIFICATION]` markers are surfaced for human resolution
 
 ## Scope Boundaries (Strict)
 

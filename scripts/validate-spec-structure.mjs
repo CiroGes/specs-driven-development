@@ -1,4 +1,5 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { findClarificationMarkers } from "./lib/spec-parsing.mjs";
 
 const REQUIRED_SECTION_TITLES = [
   "Context",
@@ -81,6 +82,7 @@ if (featureRoots.length === 0) {
 
 const missingFiles = [];
 const missingSections = [];
+const clarificationWarnings = [];
 
 for (const featureRoot of featureRoots) {
   const requiredFiles = [
@@ -105,6 +107,17 @@ for (const featureRoot of featureRoots) {
     if (!hasRequiredSection(specContent, sectionTitle)) {
       missingSections.push({ specPath, sectionTitle });
     }
+  }
+
+  for (const marker of findClarificationMarkers(specContent)) {
+    clarificationWarnings.push({ specPath, marker });
+  }
+}
+
+if (clarificationWarnings.length > 0) {
+  console.warn("Warning: unresolved [NEEDS CLARIFICATION] markers (non-blocking):");
+  for (const item of clarificationWarnings) {
+    console.warn(`- ${item.marker} (in ${item.specPath})`);
   }
 }
 

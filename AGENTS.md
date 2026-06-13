@@ -15,6 +15,7 @@ Key documents:
 - [docs/product-prd.md](docs/product-prd.md) — product PRD (the explicit starting point)
 - [docs/sdd-lifecycle.md](docs/sdd-lifecycle.md) — SDD lifecycle summary
 - [docs/conventions.md](docs/conventions.md) — folder/naming conventions
+- [docs/spec-authoring.md](docs/spec-authoring.md) — EARS criteria, clarification markers, coverage
 - [README.md](README.md) — skeleton overview, installer, and scripts
 
 ## Repository Layout

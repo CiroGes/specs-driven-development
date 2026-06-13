@@ -11,8 +11,9 @@ Use this skill when a feature needs a new or updated `feature.spec.md`.
 
 1. Read feature context and constraints.
 2. Fill required sections in this order: Context, Problem, Goals, Non-Goals, Scenarios, Acceptance Criteria, Traceability.
-3. Ensure acceptance criteria are testable and observable.
-4. Link spec to planned code and tests.
+3. Write acceptance criteria in EARS with stable ids (`AC<n>`), one observable behavior each, using SHALL/SHALL NOT (Given/When/Then allowed). Avoid soft verbs and compound criteria. See [docs/spec-authoring.md](../../../docs/spec-authoring.md).
+4. When an input is missing, insert a `[NEEDS CLARIFICATION: <question>]` marker in plain prose instead of inventing the answer; list all open markers at the end.
+5. Link spec to planned code and tests.
 
 ## Required Outputs
 
