@@ -115,7 +115,10 @@ Provide a practical starter repository that standardizes SDD execution with reus
 - Milestone 1: skeleton and baseline workflow (completed).
 - Milestone 2: feature lifecycle proven with `random-integer-calculator` (completed).
 - Milestone 3: release automation and `v0.1.0` publication (completed).
-- Milestone 4: add global PRD and reusable PRD template (current).
+- Milestone 4: add global PRD and reusable PRD template (completed).
+- Milestone 5: SDD capability enhancements — spec-quality-gates delivered (EARS +
+  clarification markers + coverage gate); further candidates tracked in
+  [roadmap.md](roadmap.md) (current).
 
 ## 11. Open Questions
 - Should PRD compliance checks be automated in scripts?
