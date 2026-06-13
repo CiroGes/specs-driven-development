@@ -1,6 +1,6 @@
 # Specs-Driven Development Skeleton — Agent Guide
 
-This file is loaded automatically by Claude Code (and other agent tools that follow the `AGENTS.md` convention). It captures the operating context, conventions, and SDD workflow for this repository. It mirrors the rules under `.cursor/rules/` so that every agent tool shares the same source of truth.
+This file is loaded automatically by Claude Code, Codex, and other agent tools that follow the `AGENTS.md` convention. It captures the operating context, conventions, and SDD workflow for this repository. It is the single source of truth for operating rules, so every agent tool shares the same guidance.
 
 ## Project Context
 
@@ -21,8 +21,7 @@ Key documents:
 ## Repository Layout
 
 - `.claude/` — Claude Code adapter (`commands/`, `skills/`).
-- `.cursor/` — Cursor adapter (`rules/`, `commands/`, `mcp.json`).
-- `.codex/` — Codex-style repo-local skills.
+- `.agents/skills/` — Codex-discoverable skills (`release-manager`, `spec-author`, `spec-implementer`).
 - `mcp/` — minimal MCP context server (`sdd-context-server.mjs`).
 - `src/features/<feature>/` — feature-first implementation.
 - `specs/features/<feature>/` — `feature.spec.md`, `tasks.md`, `acceptance.md`.
@@ -49,7 +48,9 @@ Phase-by-phase entry points live as slash commands under `.claude/commands/`:
 - `/sdd-commit` — Conventional Commits message helper.
 - `/sdd-retro` — capture lessons learned and reusable improvements.
 
-Reusable skills live under `.claude/skills/`:
+These slash commands are a Claude Code convenience layer. Codex does not discover `.claude/commands/`; it follows the same workflow from this guide (the SDD Workflow and Scope Boundaries sections) plus the skills below.
+
+Reusable skills live under `.claude/skills/` (Claude Code) and are mirrored to `.agents/skills/` for Codex discovery:
 
 - `spec-author` — create/refine `feature.spec.md` with acceptance + traceability.
 - `spec-implementer` — implement from approved specs preserving traceability.
@@ -115,4 +116,4 @@ Initial commit guidance: prefer `chore(init): bootstrap specs-driven development
 
 - Start from the PRD, not from `/sdd-init`: define `docs/product-prd.md` from the template before initializing a concrete feature.
 - The bundled demo project lives under `examples/sdd-demo/`; the local `validate:specs`, `map:specs`, and `mcp:sdd-context:*` scripts are wired to that example tree.
-- This repository is a distributable skeleton: `npm run install:skeleton -- --target ../my-project` copies the reusable adapters (including `.claude/`) into another repo. Keep the Cursor, Codex, and Claude adapters in sync when changing workflow rules or commands.
+- This repository is a distributable skeleton: `npm run install:skeleton -- --target ../my-project` copies the reusable adapters (`.claude/`, `.agents/skills/`, `AGENTS.md`) into another repo. Keep the Claude adapter (`.claude/`) and the Codex-discoverable skills (`.agents/skills/`) in sync when changing workflow commands or skills, and update `AGENTS.md` when operating rules change.

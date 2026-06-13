@@ -2,7 +2,7 @@
 
 ## Resumen
 
-Este documento cuenta, en orden cronológico, cómo se ejecutó el flujo de trabajo de este proyecto con enfoque specs-driven development (SDD), usando los comandos de Cursor y cerrando cada etapa con commits explícitos.
+Este documento cuenta, en orden cronológico, cómo se ejecutó el flujo de trabajo de este proyecto con enfoque specs-driven development (SDD), usando los comandos SDD y cerrando cada etapa con commits explícitos.
 
 Feature de referencia: `random-integer-calculator`.
 
@@ -10,7 +10,7 @@ Feature de referencia: `random-integer-calculator`.
 
 1. `ad34dfe` — `chore(init): bootstrap specs-driven development skeleton`
 - Se creó el skeleton base del proyecto.
-- Se agregaron reglas de Cursor, comandos SDD, skills, estructura de specs, código hello-world, tests, scripts de validación y configuración Node/TS/JS.
+- Se agregaron reglas de agente (`AGENTS.md`), comandos SDD, skills, estructura de specs, código hello-world, tests, scripts de validación y configuración Node/TS/JS.
 
 2. `d4a22ca` — `chore(cursor): harden sdd command scope boundaries`
 - Se reforzó el alcance de comandos para evitar sobre-ejecución:
@@ -53,7 +53,7 @@ Feature de referencia: `random-integer-calculator`.
 - Se registró la retrospectiva en:
   - `specs/features/random-integer-calculator/retro.md`
 - Se mejoró el proceso:
-  - convención nueva en `.cursor/commands/sdd-plan.md`
+  - convención nueva en `.claude/commands/sdd-plan.md`
   - ajuste del template `specs/templates/tasks.template.md`
   - enfoque: si acceptance requiere verificación manual CLI, agregar o reutilizar script de proyecto y documentarlo en `acceptance.md`.
 

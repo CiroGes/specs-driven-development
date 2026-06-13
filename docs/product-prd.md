@@ -2,7 +2,7 @@
 
 ## 1. Document Control
 - Owner: Repository maintainers
-- Stakeholders: Developers using Cursor/Codex workflows
+- Stakeholders: Developers using Claude Code/Codex workflows
 - Status: Active
 - Last updated: 2026-02-26
 
@@ -47,8 +47,8 @@ Provide a practical starter repository that standardizes SDD execution with reus
 ## 5. Scope
 ### In scope
 - Node.js ESM project skeleton (TS/JS hybrid)
-- Cursor rules and commands for SDD
-- Codex-style skills for spec authoring, implementation, and releases
+- Agent operating rules in `AGENTS.md` and SDD commands under `.claude/commands/`
+- Codex-discoverable skills for spec authoring, implementation, and releases
 - Traceability scripts and quality checks
 
 ### Out of scope
@@ -60,8 +60,8 @@ Provide a practical starter repository that standardizes SDD execution with reus
 ### Functional requirements
 - Must make `docs/product-prd.md` the first artifact to define when starting a new project.
 - Must support feature-first specs under `specs/features/`.
-- Must define operational rules under `.cursor/rules/`.
-- Must define command workflows under `.cursor/commands/`.
+- Must define operational rules in `AGENTS.md` as the single source of truth.
+- Must define command workflows under `.claude/commands/`.
 - Must provide at least one end-to-end example feature.
 - Must namespace skeleton-owned npm scripts when they represent optional subsystems such as MCP servers, to avoid collisions with project-specific tooling.
 - Must support conventional commits and release automation.
@@ -84,7 +84,7 @@ Provide a practical starter repository that standardizes SDD execution with reus
 - Rules and commands must remain readable and maintainable.
 
 ### Assumptions
-- Contributors use Cursor/Codex-like agent workflows.
+- Contributors use Claude Code/Codex-like agent workflows.
 - Team accepts docs-first planning before implementation.
 
 ## 8. UX / User Flows
@@ -109,7 +109,7 @@ Provide a practical starter repository that standardizes SDD execution with reus
 - Risk: inconsistent release artifacts.
   - Mitigation: `release-manager` skill and scripted release workflow.
 - Risk: generic skeleton script names collide with project-specific tooling.
-  - Mitigation: namespace subsystem scripts such as `mcp:sdd-context:*` and keep `.cursor/mcp.json` wired directly to the server command.
+  - Mitigation: namespace subsystem scripts such as `mcp:sdd-context:*` so MCP clients can wire directly to the server command.
 
 ## 10. Rollout Plan
 - Milestone 1: skeleton and baseline workflow (completed).
@@ -123,9 +123,9 @@ Provide a practical starter repository that standardizes SDD execution with reus
 - Should a dedicated skill handle KPI tracking for process quality?
 
 ## 12. Traceability
-- Rules: `.cursor/rules/`
-- Commands: `.cursor/commands/`
-- Skills: `.codex/skills/`
+- Rules: `AGENTS.md`
+- Commands: `.claude/commands/`
+- Skills: `.agents/skills/`
 - Specs: `specs/features/`
 - Example features:
   - `examples/sdd-demo/specs/features/hello-world/`

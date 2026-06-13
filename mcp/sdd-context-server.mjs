@@ -25,12 +25,11 @@ function getCliOption(name) {
 
 const REPO_ROOT = process.cwd();
 const PRODUCT_PRD_PATH = "docs/product-prd.md";
-const RULES_DIR = ".cursor/rules";
 const FEATURES_DIR =
   getCliOption("features-dir") ||
   process.env.SDD_FEATURES_DIR ||
   "specs/features";
-const SKILL_DIRS = [".codex/skills", ".agents/skills"];
+const SKILL_DIRS = [".agents/skills"];
 
 function resolvePath(relativePath) {
   return path.resolve(REPO_ROOT, relativePath);
@@ -57,18 +56,6 @@ function listFeatureNames() {
     .readdirSync(absoluteDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
-    .sort();
-}
-
-function listRulePaths() {
-  const absoluteDir = resolvePath(RULES_DIR);
-  if (!fs.existsSync(absoluteDir)) {
-    return [];
-  }
-  return fs
-    .readdirSync(absoluteDir, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".mdc"))
-    .map((entry) => path.posix.join(RULES_DIR, entry.name))
     .sort();
 }
 
@@ -185,15 +172,6 @@ function getFeatureContext(feature, includeContent = true) {
 }
 
 function buildContextBundle({ feature, task, command, includeContent = true }) {
-  const rulePaths = listRulePaths();
-  const rules = rulePaths.map((rulePath) => {
-    const item = { path: rulePath };
-    if (includeContent) {
-      item.content = readText(rulePath);
-    }
-    return item;
-  });
-
   const bundle = {
     generatedAt: new Date().toISOString(),
     repository: path.basename(REPO_ROOT),
@@ -202,7 +180,6 @@ function buildContextBundle({ feature, task, command, includeContent = true }) {
     productPrd: {
       path: PRODUCT_PRD_PATH,
     },
-    rules,
     skills: listSkillMetadata(includeContent),
     feature: getFeatureContext(feature, includeContent),
     recommendedChecks: [
@@ -235,27 +212,6 @@ function registerStaticResources(server) {
           {
             uri: "context://prd/product",
             text: readText(PRODUCT_PRD_PATH),
-          },
-        ],
-      })
-    );
-  }
-
-  for (const rulePath of listRulePaths()) {
-    const name = `rule-${path.basename(rulePath, ".mdc")}`;
-    const uri = `context://rules/${path.basename(rulePath, ".mdc")}`;
-    server.registerResource(
-      name,
-      uri,
-      {
-        mimeType: "text/markdown",
-        description: `Cursor rule from ${rulePath}`,
-      },
-      async () => ({
-        contents: [
-          {
-            uri,
-            text: readText(rulePath),
           },
         ],
       })
@@ -308,15 +264,13 @@ function createServer() {
     "list_context_sources",
     {
       description:
-        "List available PRD, rules, skills, and feature specs that can be used as structured context.",
+        "List available PRD, skills, and feature specs that can be used as structured context.",
     },
     async () => {
       const features = listFeatureNames();
-      const rules = listRulePaths();
       const skills = listSkillMetadata(false);
       const output = {
         productPrd: exists(PRODUCT_PRD_PATH) ? PRODUCT_PRD_PATH : null,
-        rules,
         skills: skills.map((skill) => ({
           name: skill.name,
           path: skill.path,
@@ -381,7 +335,7 @@ function createServer() {
     "build_context_bundle",
     {
       description:
-        "Build a single context bundle for an SDD task by combining PRD, rules, skills, and one feature context.",
+        "Build a single context bundle for an SDD task by combining PRD, skills, and one feature context.",
       inputSchema: {
         feature: z.string().describe("Feature folder name under specs/features"),
         task: z
@@ -437,7 +391,6 @@ function runSelfCheck() {
   const summary = {
     repository: path.basename(REPO_ROOT),
     productPrdPresent: exists(PRODUCT_PRD_PATH),
-    ruleCount: listRulePaths().length,
     skillCount: listSkillMetadata(false).length,
     featureCount: listFeatureNames().length,
     features: listFeatureNames(),

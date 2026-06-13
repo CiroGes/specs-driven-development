@@ -35,7 +35,7 @@ Use this skill when the user asks to publish a release, create a changelog entry
 ## Quick start
 
 ```bash
-.codex/skills/release-manager/scripts/create-release.sh --version v0.1.0 --branch main --notes auto
+.agents/skills/release-manager/scripts/create-release.sh --version v0.1.0 --branch main --notes auto
 ```
 
 ## References

@@ -2,10 +2,7 @@
   "copy": [
     ".claude/commands",
     ".claude/skills",
-    ".cursor/commands",
-    ".cursor/rules",
-    ".cursor/mcp.json",
-    ".codex/skills",
+    ".agents/skills",
     "AGENTS.md",
     "CLAUDE.md",
     "docs/conventions.md",

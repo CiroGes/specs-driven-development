@@ -16,9 +16,8 @@ Why this matters:
 - Node.js ESM
 - Hybrid TypeScript + JavaScript
 - Vitest
-- Cursor rules and commands
 - Claude Code commands and skills (`.claude/` + `AGENTS.md`/`CLAUDE.md`)
-- Repo-local Codex-style skills
+- Codex-discoverable skills (`.agents/skills/`) + `AGENTS.md`
 - Product PRD + reusable PRD template
 - Minimal MCP server for structured context bundles
 
@@ -47,12 +46,10 @@ Why this matters:
 
 ## Repository Structure
 
-- `.cursor/rules`: Cursor behavior constraints and conventions
-- `.cursor/commands`: guided commands for SDD workflow
-- `.claude/commands`: same SDD workflow guides as Claude Code slash commands
+- `.claude/commands`: SDD workflow guides as Claude Code slash commands
 - `.claude/skills`: reusable Claude Code skills (spec-author, spec-implementer, release-manager)
-- `AGENTS.md` / `CLAUDE.md`: canonical agent guide loaded by Claude Code and AGENTS.md-aware tools
-- `.codex/skills`: reusable skills for spec authoring and implementation
+- `AGENTS.md` / `CLAUDE.md`: canonical agent guide loaded by Claude Code, Codex, and AGENTS.md-aware tools
+- `.agents/skills`: same skills in the Codex-discoverable location (spec-author, spec-implementer, release-manager)
 - `examples/sdd-demo/`: self-contained demo project with example specs, code, tests, and storytelling
 - `specs/`: reusable templates for new projects
 - `src/`: core repository code that is not part of the demo project
@@ -65,7 +62,7 @@ Why this matters:
 
 ## MCP
 
-- [MCP minimal setup](docs/mcp-minimal.md) — explains how this repository exposes PRD, rules, and feature specs as structured MCP context, including context-bundle tools.
+- [MCP minimal setup](docs/mcp-minimal.md) — explains how this repository exposes the PRD and feature specs as structured MCP context, including context-bundle tools.
 
 ## Product PRD
 
@@ -89,9 +86,8 @@ Use the installer to copy only the reusable SDD skeleton into another repository
   - `npm run install:skeleton -- --target ../my-project --with-examples`
 
 What gets installed by default:
-- Cursor commands, rules, and MCP wiring
 - Claude Code commands and skills, plus `AGENTS.md`/`CLAUDE.md`
-- Codex skills
+- Codex-discoverable skills (`.agents/skills/`)
 - MCP server
 - SDD scripts and templates
 - TypeScript, ESLint, and Vitest config
@@ -163,9 +159,9 @@ Use this checklist for every new feature.
 - [ ] Commit related changes together (`specs/`, `src/`, `tests/`)
 - [ ] Use a clear commit message that states functional impact
 
-## Cursor Commands Explained
+## SDD Commands Explained
 
-The files in `.cursor/commands/` are workflow guides for each SDD phase.
+The files in `.claude/commands/` are workflow guides for each SDD phase.
 
 ### `sdd-init`
 
@@ -197,7 +193,7 @@ It confirms quality and consistency checks are green and that traceability links
 Use it after delivering the feature.
 It captures lessons learned and improvements to rules, templates, and commands.
 
-## Example Workflow With Cursor Commands
+## Example Workflow With SDD Commands
 
 1. Create or update `docs/product-prd.md` from the PRD template.
 2. Run `sdd-init` for a new feature (for example `sum-two-integers-console`).

@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "sdd-context": {
-      "command": "node",
-      "args": ["mcp/sdd-context-server.mjs"]
-    }
-  }
-}
