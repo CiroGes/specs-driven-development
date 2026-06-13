@@ -17,6 +17,7 @@ Why this matters:
 - Hybrid TypeScript + JavaScript
 - Vitest
 - Cursor rules and commands
+- Claude Code commands and skills (`.claude/` + `AGENTS.md`/`CLAUDE.md`)
 - Repo-local Codex-style skills
 - Product PRD + reusable PRD template
 - Minimal MCP server for structured context bundles
@@ -48,6 +49,9 @@ Why this matters:
 
 - `.cursor/rules`: Cursor behavior constraints and conventions
 - `.cursor/commands`: guided commands for SDD workflow
+- `.claude/commands`: same SDD workflow guides as Claude Code slash commands
+- `.claude/skills`: reusable Claude Code skills (spec-author, spec-implementer, release-manager)
+- `AGENTS.md` / `CLAUDE.md`: canonical agent guide loaded by Claude Code and AGENTS.md-aware tools
 - `.codex/skills`: reusable skills for spec authoring and implementation
 - `examples/sdd-demo/`: self-contained demo project with example specs, code, tests, and storytelling
 - `specs/`: reusable templates for new projects
@@ -86,6 +90,7 @@ Use the installer to copy only the reusable SDD skeleton into another repository
 
 What gets installed by default:
 - Cursor commands, rules, and MCP wiring
+- Claude Code commands and skills, plus `AGENTS.md`/`CLAUDE.md`
 - Codex skills
 - MCP server
 - SDD scripts and templates

@@ -52,7 +52,8 @@ function isConcreteRepoPath(value) {
       value.startsWith("tests/") ||
       value.startsWith("specs/")) &&
     !value.includes("<") &&
-    !value.includes(">")
+    !value.includes(">") &&
+    !value.includes("*")
   );
 }
 

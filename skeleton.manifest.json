@@ -1,9 +1,13 @@
 {
   "copy": [
+    ".claude/commands",
+    ".claude/skills",
     ".cursor/commands",
     ".cursor/rules",
     ".cursor/mcp.json",
     ".codex/skills",
+    "AGENTS.md",
+    "CLAUDE.md",
     "docs/conventions.md",
     "docs/mcp-minimal.md",
     "docs/sdd-lifecycle.md",
