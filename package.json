@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "install:skeleton": "node scripts/install-sdd-skeleton.mjs",
+    "adapters:build": "node scripts/build-agent-adapters.mjs",
+    "prepare": "node scripts/build-agent-adapters.mjs",
     "hello": "npm run example:hello",
     "random-calc": "npm run example:random-calc",
     "example:hello": "tsx examples/sdd-demo/src/app.ts",

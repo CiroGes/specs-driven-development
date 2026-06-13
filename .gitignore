@@ -6,3 +6,11 @@ coverage/
 
 # Claude Code local-only settings
 .claude/settings.local.json
+
+# Generated agent adapters — projected from the canonical sdd/ source.
+# Run `npm run adapters:build` (or just `npm install`) to (re)generate them.
+/.claude/commands/
+/.claude/skills/
+/.agents/skills/
+/.opencode/
+/CLAUDE.md

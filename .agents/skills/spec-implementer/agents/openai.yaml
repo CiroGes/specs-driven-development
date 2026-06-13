@@ -1,5 +1,0 @@
-version: 1
-interface:
-  display_name: Spec Implementer
-  short_description: Implement approved specs with feature-first code and test traceability.
-  default_prompt: Implement the selected spec tasks, keep traceability intact, and validate acceptance criteria with tests.

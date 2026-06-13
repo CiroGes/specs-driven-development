@@ -1,5 +1,0 @@
-version: 1
-interface:
-  display_name: Spec Author
-  short_description: Create and refine feature specs with acceptance criteria and traceability.
-  default_prompt: Draft or improve a feature spec using the required sections and link it to code/tests.
