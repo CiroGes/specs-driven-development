@@ -39,56 +39,56 @@ path. Deterministic (stable key order, no timestamps).
 
 ### Phase 1 — Canonical source
 
-- [ ] **T1** Create `sdd/commands/<name>.md` for the 7 commands: move bodies from
+- [x] **T1** Create `sdd/commands/<name>.md` for the 7 commands: move bodies from
   `.claude/commands/`, replacing Claude frontmatter with neutral frontmatter
   (`description`, `argument_hint`). (AC1)
-- [ ] **T2** Move the 3 skills into `sdd/skills/<name>/` (SKILL.md + references +
+- [x] **T2** Move the 3 skills into `sdd/skills/<name>/` (SKILL.md + references +
   scripts); add `sdd/skills/<name>/codex.yaml` from the current
   `.agents/skills/<name>/agents/openai.yaml`. (AC1)
 
 ### Phase 2 — Manifest + projector + emitters
 
-- [ ] **T3** Author `sdd/agents.manifest.json` per the design table (agents,
+- [x] **T3** Author `sdd/agents.manifest.json` per the design table (agents,
   artifact→path/format/frontmatter, placeholder mapping). (AC2, AC11)
-- [ ] **T4** Implement `scripts/build-agent-adapters.mjs` + `scripts/lib/` helpers:
+- [x] **T4** Implement `scripts/build-agent-adapters.mjs` + `scripts/lib/` helpers:
   parse canonical artifacts, project per selected agent, deterministic output.
   Accept `--agents <list>` and `--target <dir>` (default: repo root). (AC3, AC15)
-- [ ] **T5** Implement per-agent emitters: claude (commands + skills + `CLAUDE.md`),
+- [x] **T5** Implement per-agent emitters: claude (commands + skills + `CLAUDE.md`),
   codex (skills + generated `agents/openai.yaml`), opencode (commands + skills to
   `.agents/skills/`). (AC12, AC13, AC14)
-- [ ] **T6** Unit tests `tests/unit/build-agent-adapters.test.ts`: frontmatter
+- [x] **T6** Unit tests `tests/unit/build-agent-adapters.test.ts`: frontmatter
   rewrite, path mapping per agent, selection (only chosen written), determinism
   (two runs identical). (AC3, AC9, AC12, AC13, AC14, AC15, AC16)
 
 ### Phase 3 — Git-ignore + local build + migration
 
-- [ ] **T7** Add `.gitignore` entries for generated `.claude/`, `.agents/skills/`,
+- [x] **T7** Add `.gitignore` entries for generated `.claude/`, `.agents/skills/`,
   `.opencode/`, and generated `CLAUDE.md`. (AC4)
-- [ ] **T8** Add `adapters:build` npm script (no `--agents` = all agents) and a
+- [x] **T8** Add `adapters:build` npm script (no `--agents` = all agents) and a
   `prepare` script that runs it on `npm install`. (AC5, AC6)
-- [ ] **T9** Remove the now-committed adapters from git tracking (`.claude/`,
+- [x] **T9** Remove the now-committed adapters from git tracking (`.claude/`,
   `.agents/skills/`, `CLAUDE.md`) and regenerate them via the build to confirm the
   repo still works for Claude + Codex + opencode. (AC4, AC5)
 
 ### Phase 4 — Selective installer
 
-- [ ] **T10** Split `skeleton.manifest.json` into agent-agnostic assets (always
+- [x] **T10** Split `skeleton.manifest.json` into agent-agnostic assets (always
   copied) vs. per-agent (projected). (AC10)
-- [ ] **T11** Extend `scripts/install-sdd-skeleton.mjs`: `--agents <list>` flag;
+- [x] **T11** Extend `scripts/install-sdd-skeleton.mjs`: `--agents <list>` flag;
   interactive prompt when absent on a TTY; project only selected agents via the
   same projector; always copy agent-agnostic assets. (AC7, AC8, AC9, AC10)
-- [ ] **T12** Installer tests (or projector-in-target tests): `--agents
+- [x] **T12** Installer tests (or projector-in-target tests): `--agents
   claude,opencode` writes only those; unselected agent's files absent;
   agent-agnostic assets always present. (AC7, AC9, AC10)
 
 ### Phase 5 — Docs + self-consistency
 
-- [ ] **T13** Update `README.md` and `docs/conventions.md`: canonical-source +
+- [x] **T13** Update `README.md` and `docs/conventions.md`: canonical-source +
   build/projection model, `--agents` install, the `.opencode/` layout. Mark
   opencode + projection delivered in `docs/roadmap.md`. (AC1)
-- [ ] **T14** Run `adapters:build` + full verify suite + `coverage:specs` on the
+- [x] **T14** Run `adapters:build` + full verify suite + `coverage:specs` on the
   demo and on `specs/features` (this feature 16/16). (AC5, AC15)
-- [ ] **T15** Reconcile `acceptance.md` with final test names.
+- [x] **T15** Reconcile `acceptance.md` with final test names.
 
 ## Risks
 

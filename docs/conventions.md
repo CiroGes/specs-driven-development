@@ -8,6 +8,16 @@
   `acceptance.md`. See [spec-authoring.md](spec-authoring.md).
 - Prefer TypeScript for contracts and logic, JavaScript for explicit adapters only.
 
+## Agent adapters
+
+- `sdd/` is the single canonical source for commands and skills. Edit adapters
+  there, never in the generated `.claude/`, `.agents/`, or `.opencode/` trees.
+- Generated adapters are git-ignored and (re)built by `npm run adapters:build`
+  (also run automatically via `prepare` on `npm install`). Per-agent divergence
+  (paths, frontmatter) lives as data in `sdd/agents.manifest.json`.
+- Skill script references use **skill-relative paths** (`scripts/foo.sh`) so they
+  are portable across every agent adapter.
+
 ## SDD tooling scripts
 
 - Keep parsing/logic in `scripts/lib/*.mjs` pure functions with unit tests; the

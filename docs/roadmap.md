@@ -31,6 +31,11 @@ which is exactly where this skeleton leads.
   discovery path); `AGENTS.md` is the single source of operating rules.
 - Removed the bundled MCP context server — the skeleton runs purely on the
   agents' native mechanisms (skills, commands, `AGENTS.md`).
+- **agent-adapter-projection**: single canonical source (`sdd/`) projected into
+  per-agent adapters; added **opencode** support; the installer is agent-selective
+  (`--agents`), so targets are not overloaded. Generated adapters are git-ignored
+  and rebuilt via `adapters:build`/`prepare`. See
+  `specs/features/agent-adapter-projection/`.
 
 ## Tier 2 — candidates (medium value / medium effort)
 

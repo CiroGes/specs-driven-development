@@ -1,7 +1,7 @@
 # Feature: agent-adapter-projection
 
-> Status: spec-authoring phase — clarifications resolved, ready for `/sdd-plan`.
-> Acceptance criteria in EARS (dogfoods the spec-quality-gates convention).
+> Status: implemented (phases 1-5). Acceptance criteria in EARS (dogfoods the
+> spec-quality-gates convention); coverage:specs reports this feature 16/16.
 
 ## Context
 

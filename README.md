@@ -16,8 +16,8 @@ Why this matters:
 - Node.js ESM
 - Hybrid TypeScript + JavaScript
 - Vitest
-- Claude Code commands and skills (`.claude/` + `AGENTS.md`/`CLAUDE.md`)
-- Codex-discoverable skills (`.agents/skills/`) + `AGENTS.md`
+- A single canonical agent source (`sdd/`) projected into per-agent adapters
+- Multi-agent support: Claude Code, Codex, and opencode (pick at install time)
 - Product PRD + reusable PRD template
 
 ## Project Flow
@@ -30,7 +30,8 @@ Why this matters:
 
 ## Commands
 
-- `npm run install:skeleton -- --target ../my-project`
+- `npm run install:skeleton -- --target ../my-project` (add `--agents claude,opencode` to pick agents)
+- `npm run adapters:build` (regenerate local agent adapters from `sdd/`)
 - `npm run hello`
 - `npm run random-calc`
 - `npm run example:hello`
@@ -43,15 +44,20 @@ Why this matters:
 
 ## Repository Structure
 
-- `.claude/commands`: SDD workflow guides as Claude Code slash commands
-- `.claude/skills`: reusable Claude Code skills (spec-author, spec-implementer, release-manager)
-- `AGENTS.md` / `CLAUDE.md`: canonical agent guide loaded by Claude Code, Codex, and AGENTS.md-aware tools
-- `.agents/skills`: same skills in the Codex-discoverable location (spec-author, spec-implementer, release-manager)
+- `sdd/`: **canonical source of truth** — agent-agnostic command + skill bodies
+  (`sdd/commands/`, `sdd/skills/`) plus the projection manifest
+  (`sdd/agents.manifest.json`). Edit adapters here.
+- `AGENTS.md`: canonical agent guide/rules, read directly by Claude Code, Codex,
+  opencode, and other AGENTS.md-aware tools (hand-written, not generated).
+- Generated per-agent adapters (git-ignored; produced by `npm run adapters:build`):
+  - `.claude/commands` + `.claude/skills` + `CLAUDE.md` (Claude Code)
+  - `.agents/skills` (Codex + opencode read it; Codex also gets `agents/openai.yaml`)
+  - `.opencode/command` (opencode slash commands)
 - `examples/sdd-demo/`: self-contained demo project with example specs, code, tests, and storytelling
 - `specs/`: reusable templates for new projects
 - `src/`: core repository code that is not part of the demo project
 - `tests/`: root-level tests when the skeleton itself needs them
-- `scripts/`: lightweight SDD validation scripts
+- `scripts/`: SDD validation scripts + the agent-adapter projector
 
 ## Storytelling
 
@@ -73,21 +79,24 @@ If you are bootstrapping a real project, start with the PRD, not with `sdd-init`
 
 Use the installer to copy only the reusable SDD skeleton into another repository.
 
-- Core skeleton only:
-  - `npm run install:skeleton -- --target ../my-project`
+- Core skeleton, pick agents:
+  - `npm run install:skeleton -- --target ../my-project --agents claude,opencode`
+  - Without `--agents`: prompts on an interactive terminal, otherwise installs all.
 - Include the example features too:
   - `npm run install:skeleton -- --target ../my-project --with-examples`
 
-What gets installed by default:
-- Claude Code commands and skills, plus `AGENTS.md`/`CLAUDE.md`
-- Codex-discoverable skills (`.agents/skills/`)
-- SDD scripts and templates
-- TypeScript, ESLint, and Vitest config
-- SDD-related `package.json` scripts and devDependencies
+What gets installed:
+- Agent-agnostic assets, always: `AGENTS.md`, `specs/templates/`, `docs/`, SDD
+  scripts, TypeScript/ESLint/Vitest config, and SDD `package.json` scripts/devDeps
+- Per-agent adapters, only for the agents you select (projected from `sdd/`):
+  - `claude` → `.claude/commands`, `.claude/skills`, `CLAUDE.md`
+  - `codex` → `.agents/skills` (with `agents/openai.yaml`)
+  - `opencode` → `.opencode/command` + skills in `.agents/skills`
 - `docs/product-prd.md` generated from the PRD template if it does not already exist
 
 The installer is conservative by default:
-- It does not overwrite existing files unless you pass `--force`
+- It does not overwrite existing files unless you pass `--force` (projected adapter
+  files that already exist are skipped with a warning)
 - It merges `package.json` and skips conflicting scripts/dependencies with a warning
 
 In this repository, the bundled demo project lives under `examples/sdd-demo/`. The local `validate:specs` and `map:specs` scripts are wired to that example tree. Installed projects still receive the default root-level commands for `specs/features/`, `src/`, and `tests/`.

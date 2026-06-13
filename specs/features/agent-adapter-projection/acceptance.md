@@ -3,24 +3,24 @@
 AC→verification map consumed by `coverage:specs`. `auto` = automated test;
 `script` = observable script run; `inspect` = documented review.
 
-| AC | Verification | Test / check (planned) |
-|----|--------------|------------------------|
-| AC1 | inspect | canonical `sdd/` holds single-copy commands + skills; no committed `.claude`/`.agents` duplicates |
-| AC2 | inspect + auto | projection manifest exists; projector test asserts manifest-driven mapping |
-| AC3 | auto | `tests/unit/build-agent-adapters.test.ts` (body copied + frontmatter applied + placeholders rewritten) |
-| AC4 | inspect | `.gitignore` covers generated adapter dirs and `CLAUDE.md` |
+| AC | Verification | Test / check |
+|----|--------------|--------------|
+| AC1 | inspect | canonical `sdd/` holds single-copy commands + skills; generated adapters git-ignored (not committed) |
+| AC2 | inspect + auto | `sdd/agents.manifest.json` exists; `build-agent-adapters.test.ts` asserts manifest-driven mapping |
+| AC3 | auto | `tests/unit/build-agent-adapters.test.ts` (frontmatter parsed/applied, body carried, command output) |
+| AC4 | inspect | `.gitignore` covers `.claude/commands`, `.claude/skills`, `.agents/skills`, `.opencode/`, `CLAUDE.md` |
 | AC5 | script | `npm run adapters:build` generates all agents' adapters locally |
-| AC6 | inspect | clone obtains adapters without manual build (per resolved prepare/step decision) |
-| AC7 | auto | projector/installer test: `--agents claude,opencode` writes only those |
-| AC8 | inspect | installer prompts for agents on a TTY when `--agents` is absent |
-| AC9 | auto | installer test: unselected agent's files are not written |
-| AC10 | auto | installer test: agent-agnostic assets installed regardless of selection |
-| AC11 | auto | projector test: supported agents include claude, codex, opencode |
-| AC12 | auto | projector test: opencode → `.opencode/command/*.md` + skills in `.agents/skills/` |
-| AC13 | auto | projector test: claude → `.claude/commands`, `.claude/skills`, `CLAUDE.md` |
-| AC14 | auto | projector test: codex → `.agents/skills/<name>/agents/openai.yaml` present |
-| AC15 | auto | projector test: two runs produce identical output (deterministic) |
-| AC16 | auto | `tests/unit/build-agent-adapters.test.ts` exists and covers the above |
+| AC6 | inspect | `package.json` `prepare` runs `adapters:build` on `npm install` |
+| AC7 | auto | `tests/unit/install-skeleton.test.ts` (`--agents claude` / `opencode` writes only those) |
+| AC8 | inspect | `install-sdd-skeleton.mjs` `resolveAgents` prompts on a TTY when `--agents` is absent |
+| AC9 | auto | `tests/unit/install-skeleton.test.ts` + `build-agent-adapters.test.ts` (unselected agent paths absent) |
+| AC10 | auto | `tests/unit/install-skeleton.test.ts` (AGENTS.md, specs/templates, package.json always present) |
+| AC11 | auto | `tests/unit/build-agent-adapters.test.ts` (claude/codex/opencode round-trip) |
+| AC12 | auto | `tests/unit/build-agent-adapters.test.ts` (opencode → `.opencode/command` + skills in `.agents/skills`) |
+| AC13 | auto | `tests/unit/build-agent-adapters.test.ts` (claude → `.claude/commands`, `.claude/skills`, `CLAUDE.md`) |
+| AC14 | auto | `tests/unit/build-agent-adapters.test.ts` (codex → `.agents/skills/<name>/agents/openai.yaml`) |
+| AC15 | auto | `tests/unit/build-agent-adapters.test.ts` (two `buildPlan` runs identical, sorted) |
+| AC16 | auto | `tests/unit/build-agent-adapters.test.ts` (9 cases) + `install-skeleton.test.ts` (2 cases) |
 
 ## Manual verification commands (planned)
 
