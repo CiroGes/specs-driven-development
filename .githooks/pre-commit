@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+# SDD pre-commit: fast, SDD-specific gates. Bypass with `git commit --no-verify`.
+# Enable in any project with: npm run hooks:install
+set -e
+
+echo "[pre-commit] lint + spec gates"
+npm run --silent lint
+npm run --silent validate:specs
+npm run --silent map:specs
+npm run --silent coverage:specs

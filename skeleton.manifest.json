@@ -1,11 +1,13 @@
 {
   "copy": [
+    ".githooks",
     "AGENTS.md",
     "docs/conventions.md",
     "docs/sdd-lifecycle.md",
     "docs/spec-authoring.md",
     "eslint.config.mjs",
     "scripts/check-spec-coverage.mjs",
+    "scripts/install-hooks.mjs",
     "scripts/install-sdd-skeleton.mjs",
     "scripts/lib",
     "scripts/map-spec-to-code.mjs",
@@ -32,7 +34,8 @@
       "lint:fix": "eslint . --fix",
       "validate:specs": "node scripts/validate-spec-structure.mjs",
       "map:specs": "node scripts/map-spec-to-code.mjs",
-      "coverage:specs": "node scripts/check-spec-coverage.mjs"
+      "coverage:specs": "node scripts/check-spec-coverage.mjs",
+      "hooks:install": "node scripts/install-hooks.mjs"
     },
     "devDependencies": {
       "@eslint/js": "^9.20.0",

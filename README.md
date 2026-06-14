@@ -43,6 +43,24 @@ Why this matters:
 - `npm run map:specs`
 - `npm run coverage:specs`
 
+## Git hooks (optional, no dependencies)
+
+Versioned hooks live in `.githooks/` and are wired via `core.hooksPath` (no Husky):
+
+- **pre-commit** — fast, SDD-specific gates: `lint`, `validate:specs`, `map:specs`,
+  `coverage:specs`.
+- **pre-push** — heavier: `typecheck`, `test`.
+
+In this repository they are enabled automatically (the `prepare` script runs on
+`npm install`). In a project you installed the skeleton into, enable them opt-in:
+
+```bash
+npm run hooks:install   # sets core.hooksPath=.githooks
+```
+
+Hooks are local and advisory — bypass with `git commit --no-verify` /
+`git push --no-verify`. For an authoritative, server-side gate, add CI as well.
+
 ## Repository Structure
 
 - `sdd/`: **canonical source of truth** — agent-agnostic command + skill bodies

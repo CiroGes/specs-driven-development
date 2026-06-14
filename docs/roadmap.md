@@ -148,9 +148,12 @@ before fixing:
   `[[ -f "$NOTES_FILE" ]]` check.
 
 ### Tier E — Process / distribution (high strategic value)
-- **E1 [high]** no CI (`.github/workflows`): the traceability differentiator is
-  enforced only by the manual checklist. Add a workflow (lint+typecheck+test+
-  validate+map+coverage) and optionally project one into targets.
+- **E1 [high] — PARTIAL** local enforcement added via git hooks
+  (`specs/features/`-less, dependency-free `.githooks/` + `core.hooksPath`):
+  pre-commit (lint + spec gates) and pre-push (typecheck + test); enabled in this
+  repo via `prepare`, opt-in for consumers via `npm run hooks:install`. Hooks are
+  bypassable/local — a **server-side CI workflow is still open** as the
+  authoritative gate (and to ship CI into targets).
 - **E2 [med]** no `engines` field though the code needs Node ≥17 (`readline/
   promises`) / ≥16.7 (`cpSync`); `.nvmrc` (22) isn't shipped. Declare `engines.node`
   + ship `.nvmrc`.

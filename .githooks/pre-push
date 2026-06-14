@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# SDD pre-push: heavier checks before sharing. Bypass with `git push --no-verify`.
+set -e
+
+echo "[pre-push] typecheck + tests"
+npm run --silent typecheck
+npm run --silent test
