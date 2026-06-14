@@ -8,6 +8,7 @@ import {
   readCanonical,
   buildPlan,
   writeActions,
+  normalizeText,
   ALL_AGENTS,
 } from "../../scripts/lib/agent-adapters.mjs";
 
@@ -40,6 +41,24 @@ describe("frontmatter", () => {
   it("returns body unchanged when there is no frontmatter", () => {
     expect(parseFrontmatter("no fm").body).toBe("no fm");
     expect(renderFrontmatter({})).toBe("");
+  });
+});
+
+describe("normalizeText (CRLF / BOM)", () => {
+  it("strips a leading BOM and converts CRLF to LF", () => {
+    expect(normalizeText("﻿---\r\ndescription: x\r\n---\r\nbody\r\n")).toBe(
+      "---\ndescription: x\n---\nbody\n"
+    );
+  });
+
+  it("lets frontmatter parse correctly after normalization (CRLF would otherwise drop it)", () => {
+    const crlf = "---\r\ndescription: Bootstrap.\r\n---\r\n# Cmd\r\nbody\r\n";
+    // raw CRLF defeats the parser...
+    expect(parseFrontmatter(crlf).data).toEqual({});
+    // ...normalized, the description is recovered and the body is LF-clean
+    const parsed = parseFrontmatter(normalizeText(crlf));
+    expect(parsed.data).toEqual({ description: "Bootstrap." });
+    expect(parsed.body).toBe("# Cmd\nbody\n");
   });
 });
 

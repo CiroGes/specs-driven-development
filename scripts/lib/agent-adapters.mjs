@@ -13,6 +13,15 @@ import path from "node:path";
 export const ALL_AGENTS = ["claude", "codex", "opencode"];
 
 /**
+ * Strip a leading UTF-8 BOM and normalize CRLF to LF, so frontmatter parsing and
+ * emitted adapters are line-ending consistent regardless of the source checkout
+ * (e.g. Windows / git autocrlf). Also fixes CRLF shebangs in projected `.sh`.
+ */
+export function normalizeText(text) {
+  return text.replace(/^\uFEFF/, "").replace(/\r\n/g, "\n");
+}
+
+/**
  * Parse `--- ... ---` YAML-ish frontmatter into { data, body }. Only flat
  * `key: value` pairs are supported (enough for command metadata).
  */
@@ -47,7 +56,7 @@ export function readCanonical(sddDir) {
     .sort()
     .map((f) => ({
       name: f.replace(/\.md$/, ""),
-      text: readFileSync(path.join(commandsDir, f), "utf8"),
+      text: normalizeText(readFileSync(path.join(commandsDir, f), "utf8")),
     }));
 
   const skillsDir = path.join(sddDir, "skills");
@@ -66,8 +75,9 @@ export function readCanonical(sddDir) {
           const abs = path.join(dir, entry.name);
           const r = rel ? path.posix.join(rel, entry.name) : entry.name;
           if (entry.isDirectory()) walk(abs, r);
-          else if (r === "codex.yaml") codexYaml = readFileSync(abs, "utf8");
-          else files.push({ rel: r, content: readFileSync(abs, "utf8") });
+          else if (r === "codex.yaml")
+            codexYaml = normalizeText(readFileSync(abs, "utf8"));
+          else files.push({ rel: r, content: normalizeText(readFileSync(abs, "utf8")) });
         }
       };
       walk(path.join(skillsDir, name), "");

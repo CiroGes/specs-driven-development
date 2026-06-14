@@ -120,9 +120,12 @@ project is now safe and idempotent.
   keep non-interactive installs working).
 
 ### Tier C — Cross-platform & parser robustness (medium)
-- **C1 [high]** frontmatter parser breaks on CRLF/BOM (Windows / `autocrlf`):
-  `description` dropped, raw `---` leaks into every projected adapter. Normalize
-  `\r\n`/BOM before matching.
+- **C1 [low] — DONE** frontmatter parser missed CRLF/BOM (Windows / `autocrlf`).
+  Severity corrected from the audit's "high": verified the projected adapter stayed
+  functional (the un-parsed fence remained in the body, so `description` was not
+  actually lost) — the real risk was latent (future frontmatter transforms would
+  silently no-op on CRLF) plus mixed line endings (incl. CRLF shebangs in `.sh`).
+  Fixed by `normalizeText` (strip BOM + CRLF→LF) at read time in `readCanonical`.
 - **C2 [low]** POSIX-only path handling (`split("/").pop()`, hardcoded `/`) in the
   three spec scripts → use `path.basename`/`path.join`.
 - **C3 [med]** `map-spec-to-code` treats any backticked `src/|tests/|specs/` path
