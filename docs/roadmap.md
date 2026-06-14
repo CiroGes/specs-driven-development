@@ -95,8 +95,9 @@ commands are red until the user hand-creates a feature. Verified empirically.
   existing backward-compatible-gate principle ("no AC ids = no-op pass").
 - **A2 [high]** `npm test` exits 1 with no test files → set
   `test: { passWithNoTests: true }` in `vitest.config.ts`.
-- **A3 [high]** `typecheck` errors because `tsconfig` includes `src`/`tests`/
-  `examples` that don't exist in a fresh target → make includes tolerant.
+- ~~**A3** `typecheck` errors on a fresh target~~ — **REJECTED**: verified `tsc
+  --noEmit` exits 0 in a fresh install (`vitest.config.ts` is a valid input; tsc
+  tolerates the empty `src`/`tests`/`examples` globs). Not a bug.
 - **A4 [med]** target gets **no `.gitignore`** (would commit `node_modules/`).
   NOT a plain copy: **merge** — append only missing lines, idempotent (like
   `mergePackageJson`); never overwrite an existing `.gitignore`. Consumer ignore
