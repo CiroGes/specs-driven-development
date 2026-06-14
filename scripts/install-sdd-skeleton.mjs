@@ -3,6 +3,8 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
+  readdirSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import path from "node:path";
@@ -146,41 +148,52 @@ function ensureDir(dirPath) {
   mkdirSync(dirPath, { recursive: true });
 }
 
-function copyEntry(relativePath, targetRoot, force) {
-  const sourcePath = path.join(REPO_ROOT, relativePath);
-  const targetPath = path.join(targetRoot, relativePath);
+// Recursive copy that skips files already present in the target (unless --force),
+// recording added/skipped relative paths. Directories are always traversed.
+function copyInto(sourcePath, targetPath, force, stats, targetRoot) {
+  if (statSync(sourcePath).isDirectory()) {
+    ensureDir(targetPath);
+    for (const name of readdirSync(sourcePath)) {
+      copyInto(
+        path.join(sourcePath, name),
+        path.join(targetPath, name),
+        force,
+        stats,
+        targetRoot
+      );
+    }
+    return;
+  }
 
+  const rel = path.relative(targetRoot, targetPath);
+  if (existsSync(targetPath) && !force) {
+    stats.skipped.push(rel);
+    return;
+  }
+  ensureDir(path.dirname(targetPath));
+  cpSync(sourcePath, targetPath, { force: true });
+  stats.added.push(rel);
+}
+
+function copyEntry(relativePath, targetRoot, force, stats) {
+  const sourcePath = path.join(REPO_ROOT, relativePath);
   if (!existsSync(sourcePath)) {
     throw new Error(`Manifest path does not exist: ${relativePath}`);
   }
-
-  ensureDir(path.dirname(targetPath));
-  cpSync(sourcePath, targetPath, {
-    force,
-    recursive: true,
-    errorOnExist: !force,
-  });
+  copyInto(sourcePath, path.join(targetRoot, relativePath), force, stats, targetRoot);
 }
 
-function copyManifestEntry(entry, targetRoot, force) {
+function copyManifestEntry(entry, targetRoot, force, stats) {
   if (typeof entry === "string") {
-    copyEntry(entry, targetRoot, force);
+    copyEntry(entry, targetRoot, force, stats);
     return;
   }
 
   const sourcePath = path.join(REPO_ROOT, entry.source);
-  const targetPath = path.join(targetRoot, entry.target);
-
   if (!existsSync(sourcePath)) {
     throw new Error(`Manifest path does not exist: ${entry.source}`);
   }
-
-  ensureDir(path.dirname(targetPath));
-  cpSync(sourcePath, targetPath, {
-    force,
-    recursive: true,
-    errorOnExist: !force,
-  });
+  copyInto(sourcePath, path.join(targetRoot, entry.target), force, stats, targetRoot);
 }
 
 function generateEntry(sourceRelativePath, targetRelativePath, targetRoot, force) {
@@ -264,13 +277,23 @@ async function main() {
     const manifest = loadManifest();
     const allAgents = Object.keys(loadProjectionManifest().agents);
     const agents = await resolveAgents(options, allAgents);
+
+    // Validate agents BEFORE writing anything to the target.
+    const unknownAgents = agents.filter((a) => !allAgents.includes(a));
+    if (unknownAgents.length > 0) {
+      throw new Error(
+        `Unknown agent(s): ${unknownAgents.join(", ")}. Known: ${allAgents.join(", ")}`
+      );
+    }
+
     const warnings = [];
+    const stats = { added: [], skipped: [] };
 
     ensureDir(targetRoot);
 
-    // Agent-agnostic assets (always installed).
+    // Agent-agnostic assets (always installed; existing files skipped unless --force).
     for (const entry of manifest.copy) {
-      copyManifestEntry(entry, targetRoot, options.force);
+      copyManifestEntry(entry, targetRoot, options.force, stats);
     }
 
     // Per-agent adapters (only the selected agents, projected from sdd/).
@@ -300,7 +323,7 @@ async function main() {
 
     if (options.withExamples) {
       for (const entry of manifest.examples?.copy ?? []) {
-        copyManifestEntry(entry, targetRoot, options.force);
+        copyManifestEntry(entry, targetRoot, options.force, stats);
       }
       mergePackageJson(
         targetRoot,
@@ -317,6 +340,12 @@ async function main() {
         ? "Included: core skeleton and example features"
         : "Included: core skeleton only"
     );
+    console.log(
+      `Assets: ${stats.added.length} added, ${stats.skipped.length} skipped (already present).`
+    );
+    if (stats.skipped.length > 0 && !options.force) {
+      console.log("Pass --force to overwrite the skipped files.");
+    }
     console.log("Next steps:");
     console.log("- Run npm install");
     console.log("- Review docs/product-prd.md");

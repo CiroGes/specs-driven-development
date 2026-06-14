@@ -19,23 +19,23 @@
 
 ## Ordered tasks
 
-- [ ] **T1** Add a recursive `copyInto(src, dest, force, stats, targetRoot)`
+- [x] **T1** Add a recursive `copyInto(src, dest, force, stats, targetRoot)`
   helper in `install-sdd-skeleton.mjs` (traverse dirs; skip existing files when
   `!force`, recording added/skipped relative paths). (AC1, AC2)
-- [ ] **T2** Route `copyManifestEntry` (string + `{source,target}` forms) and the
+- [x] **T2** Route `copyManifestEntry` (string + `{source,target}` forms) and the
   `--with-examples` copies through `copyInto`; drop the `errorOnExist` abort. (AC1, AC3)
-- [ ] **T3** Validate `--agents` against the manifest immediately after
+- [x] **T3** Validate `--agents` against the manifest immediately after
   `resolveAgents`, before any write. (AC5)
-- [ ] **T4** Thread `stats` through `main`; print the added/skipped summary and the
+- [x] **T4** Thread `stats` through `main`; print the added/skipped summary and the
   `--force` hint. (AC6, AC7)
-- [ ] **T5** Confirm idempotency: a second run with no `--force` performs no writes
+- [x] **T5** Confirm idempotency: a second run with no `--force` performs no writes
   (skips everything). (AC4)
-- [ ] **T6** Extend `tests/unit/install-skeleton.test.ts`: install onto a populated
+- [x] **T6** Extend `tests/unit/install-skeleton.test.ts`: install onto a populated
   target completes (no throw) and leaves a pre-existing `tsconfig.json` untouched;
   `--force` overwrites it; unknown `--agents` exits non-zero and writes nothing. (AC8)
-- [ ] **T7** Docs: README note on conservative-by-default install + `--force`; mark
+- [x] **T7** Docs: README note on conservative-by-default install + `--force`; mark
   Tier B delivered in `docs/roadmap.md`. (AC3)
-- [ ] **T8** Reconcile `acceptance.md` with final test names. (AC8)
+- [x] **T8** Reconcile `acceptance.md` with final test names. (AC8)
 
 ## Risks
 

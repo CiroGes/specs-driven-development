@@ -1,6 +1,6 @@
 # Feature: install-idempotency
 
-> Status: spec-authoring phase. Acceptance criteria in EARS (dogfoods the
+> Status: implemented. Acceptance criteria in EARS (dogfoods the
 > spec-quality-gates convention). Scope = hardening backlog Tier B.
 
 ## Context

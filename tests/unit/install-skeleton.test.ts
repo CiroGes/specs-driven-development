@@ -1,16 +1,36 @@
 import { describe, it, expect } from "vitest";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, existsSync, rmSync, readFileSync } from "node:fs";
+import {
+  mkdtempSync,
+  existsSync,
+  rmSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { mergeGitignore, CONSUMER_GITIGNORE } from "../../scripts/lib/gitignore.mjs";
 
 const INSTALLER = path.resolve("scripts/install-sdd-skeleton.mjs");
 
-function install(target: string, agents: string) {
-  execFileSync("node", [INSTALLER, "--target", target, "--agents", agents], {
+function install(target: string, agents: string, extra: string[] = []) {
+  execFileSync("node", [INSTALLER, "--target", target, "--agents", agents, ...extra], {
     stdio: "pipe",
   });
+}
+
+function tryInstall(target: string, agents: string, extra: string[] = []): { code: number; out: string } {
+  try {
+    const out = execFileSync(
+      "node",
+      [INSTALLER, "--target", target, "--agents", agents, ...extra],
+      { encoding: "utf8", stdio: "pipe" }
+    );
+    return { code: 0, out };
+  } catch (err: unknown) {
+    const e = err as { status?: number; stdout?: string; stderr?: string };
+    return { code: e.status ?? 1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` };
+  }
 }
 
 describe("install-sdd-skeleton --agents (selective projection)", () => {
@@ -47,6 +67,60 @@ describe("install-sdd-skeleton --agents (selective projection)", () => {
       expect(existsSync(path.join(dir, ".claude/skills/spec-author/SKILL.md"))).toBe(true);
       expect(existsSync(path.join(dir, "CLAUDE.md"))).toBe(true);
       expect(existsSync(path.join(dir, ".opencode"))).toBe(false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("install onto an existing project (Tier B: idempotency & safety)", () => {
+  const USER_TSCONFIG = '{"compilerOptions":{"strict":true}}\n';
+
+  it("completes without aborting and leaves an existing file untouched", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "sdd-exist-"));
+    try {
+      writeFileSync(path.join(dir, "tsconfig.json"), USER_TSCONFIG);
+      const { code } = tryInstall(dir, "claude");
+      expect(code).toBe(0); // no mid-abort (AC3)
+      // user's file preserved (AC1)
+      expect(readFileSync(path.join(dir, "tsconfig.json"), "utf8")).toBe(USER_TSCONFIG);
+      // the rest of the flow still ran: agnostic asset + adapters present
+      expect(existsSync(path.join(dir, "AGENTS.md"))).toBe(true);
+      expect(existsSync(path.join(dir, ".claude/commands/sdd-init.md"))).toBe(true);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("--force overwrites an existing file", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "sdd-force-"));
+    try {
+      writeFileSync(path.join(dir, "tsconfig.json"), USER_TSCONFIG);
+      install(dir, "claude", ["--force"]);
+      expect(readFileSync(path.join(dir, "tsconfig.json"), "utf8")).not.toBe(USER_TSCONFIG);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("is idempotent: a second run adds nothing", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "sdd-idem-"));
+    try {
+      install(dir, "claude");
+      const { code, out } = tryInstall(dir, "claude");
+      expect(code).toBe(0);
+      expect(out).toMatch(/0 added/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects an unknown --agents value before writing anything (AC5)", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "sdd-badagent-"));
+    try {
+      const { code } = tryInstall(dir, "clade");
+      expect(code).not.toBe(0);
+      expect(existsSync(path.join(dir, "AGENTS.md"))).toBe(false);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

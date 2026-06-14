@@ -107,14 +107,17 @@ feature.
   generated-adapter rules — targets commit their adapters).
 - **A5 [low]** installer doesn't create `specs/features/` → scaffold a `.gitkeep`.
 
-### Tier B — Installer safety on existing projects (high value)
-- **B1 [high]** `cpSync(errorOnExist:!force)` aborts mid-install on the first
-  pre-existing file → partial install. Make `copy` skip-and-warn per entry
-  (consistent with adapter projection + package.json merge).
-- **B2 [med]** unknown `--agents` validated only after agnostic assets copied →
-  partial install on typo. Validate agents **before** any copy.
-- **B3 [med]** no empty/conflict pre-scan of `--target`. Report collisions up
-  front before writing.
+### Tier B — Installer safety on existing projects (high value) — DONE
+Delivered by `specs/features/install-idempotency/`: installing onto an existing
+project is now safe and idempotent.
+- **B1 [high]** ~~`cpSync(errorOnExist)` aborts mid-install~~ → fixed: `copy` now
+  skips existing files (recursive copy with added/skipped tracking); `--force`
+  overwrites.
+- **B2 [med]** ~~unknown `--agents` validated late~~ → fixed: validated before any
+  write.
+- **B3 [med]** ~~no conflict visibility~~ → fixed: end-of-run `added N, skipped M`
+  summary + `--force` hint (chose summary-on-proceed over an interactive prompt to
+  keep non-interactive installs working).
 
 ### Tier C — Cross-platform & parser robustness (medium)
 - **C1 [high]** frontmatter parser breaks on CRLF/BOM (Windows / `autocrlf`):

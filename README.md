@@ -95,10 +95,13 @@ What gets installed:
   - `opencode` → `.opencode/command` + skills in `.agents/skills`
 - `docs/product-prd.md` generated from the PRD template if it does not already exist
 
-The installer is conservative by default:
-- It does not overwrite existing files unless you pass `--force` (projected adapter
-  files that already exist are skipped with a warning)
-- It merges `package.json` and skips conflicting scripts/dependencies with a warning
+The installer is conservative by default — safe to run on an existing project:
+- It never aborts on or overwrites files that already exist; they are skipped and
+  reported (`added N, skipped M`). Re-running is idempotent. Pass `--force` to
+  overwrite the skipped files.
+- It merges `package.json` and `.gitignore`, skipping conflicting/known entries
+  with a warning rather than clobbering them.
+- Invalid `--agents` values fail before anything is written.
 
 In this repository, the bundled demo project lives under `examples/sdd-demo/`. The local `validate:specs`, `map:specs`, and `coverage:specs` scripts are wired to that example tree. A freshly installed target starts with no features yet: those scripts and `npm test` pass with a "no features yet" notice, and stay green as you add your first feature under `specs/features/<feature>/`.
 
