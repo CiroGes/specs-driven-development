@@ -240,6 +240,10 @@ function mergePackageJson(targetRoot, manifestSection, force, warnings) {
     packageJson.type = manifestSection.type;
   }
 
+  if (manifestSection.engines && (!packageJson.engines || force)) {
+    packageJson.engines = manifestSection.engines;
+  }
+
   packageJson.scripts ??= {};
   packageJson.devDependencies ??= {};
 

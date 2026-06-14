@@ -154,11 +154,13 @@ before fixing:
   repo via `prepare`, opt-in for consumers via `npm run hooks:install`. Hooks are
   bypassable/local — a **server-side CI workflow is still open** as the
   authoritative gate (and to ship CI into targets).
-- **E2 [med]** no `engines` field though the code needs Node ≥17 (`readline/
-  promises`) / ≥16.7 (`cpSync`); `.nvmrc` (22) isn't shipped. Declare `engines.node`
-  + ship `.nvmrc`.
-- **E3 [med]** `prepare` hard-fails `npm install`/`npm ci` if `sdd/` is absent →
-  guard with `existsSync('sdd')` no-op.
+- **E2 [med] — DONE** declared `engines.node >=18` (covers `readline/promises` ≥17
+  and `cpSync` ≥16.7) in package.json and the installer manifest (merged into
+  targets); `.nvmrc` is now shipped via the manifest copy.
+- **E3 [med] — DONE** `build-agent-adapters` no-ops (exit 0 + notice) when the
+  canonical `sdd/` manifest is absent, so `prepare`/`npm install`/`npm ci` never
+  hard-fails on a shallow/partial checkout. (`install-hooks` was already a no-op
+  outside a git work tree.)
 
 ### Tier F — Root cause: test coverage
 The four CLI drivers, `validate-spec-structure`, `map-spec-to-code`, and all three

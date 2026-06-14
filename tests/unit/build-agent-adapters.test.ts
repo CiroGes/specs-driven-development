@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -103,6 +104,25 @@ describe("buildPlan", () => {
     );
     expect(cmd?.content).toContain("description: Bootstrap a feature.");
     expect(cmd?.content).toContain("# SDD Init");
+  });
+});
+
+describe("build-agent-adapters CLI: no canonical source (E3 prepare guard)", () => {
+  it("exits 0 (no-op) when the --sdd dir has no manifest, so npm install never fails", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "sdd-nosrc-"));
+    try {
+      const missingSdd = path.join(dir, "does-not-exist");
+      const out = execFileSync(
+        "node",
+        ["scripts/build-agent-adapters.mjs", "--sdd", missingSdd, "--target", dir],
+        { encoding: "utf8", stdio: "pipe" }
+      );
+      expect(out.toLowerCase()).toContain("no canonical source");
+      // nothing projected
+      expect(existsSync(path.join(dir, ".claude"))).toBe(false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 

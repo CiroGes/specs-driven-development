@@ -1,6 +1,7 @@
 {
   "copy": [
     ".githooks",
+    ".nvmrc",
     "AGENTS.md",
     "docs/conventions.md",
     "docs/sdd-lifecycle.md",
@@ -26,6 +27,9 @@
   ],
   "packageJson": {
     "type": "module",
+    "engines": {
+      "node": ">=18"
+    },
     "scripts": {
       "test": "vitest run",
       "test:watch": "vitest",

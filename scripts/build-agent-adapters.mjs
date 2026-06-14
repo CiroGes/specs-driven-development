@@ -2,7 +2,7 @@
 // Project the canonical sdd/ source into per-agent adapter files.
 // Usage: node scripts/build-agent-adapters.mjs [--agents claude,opencode] [--target DIR] [--sdd DIR]
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import {
   ALL_AGENTS,
@@ -27,9 +27,16 @@ function parseArgs(argv) {
 }
 
 const opts = parseArgs(process.argv.slice(2));
-const manifest = JSON.parse(
-  readFileSync(path.join(opts.sdd, "agents.manifest.json"), "utf8")
-);
+
+// No-op when there is no canonical source (e.g. a shallow/partial checkout or a
+// consumer project), so `prepare`/`npm install` never hard-fails.
+const manifestPath = path.join(opts.sdd, "agents.manifest.json");
+if (!existsSync(manifestPath)) {
+  console.log(`No canonical source at ${opts.sdd}/ — skipping adapter projection.`);
+  process.exit(0);
+}
+
+const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
 
 const requested = opts.agents
   ? opts.agents.split(",").map((a) => a.trim()).filter(Boolean)
