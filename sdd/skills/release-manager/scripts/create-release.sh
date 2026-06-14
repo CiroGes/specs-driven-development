@@ -46,6 +46,11 @@ if [[ "$NOTES_MODE" == "manual" && -z "$NOTES_FILE" ]]; then
   exit 1
 fi
 
+if [[ "$NOTES_MODE" == "manual" && ! -f "$NOTES_FILE" ]]; then
+  echo "--notes-file not found: $NOTES_FILE"
+  exit 1
+fi
+
 TAG="$VERSION"
 if [[ "$TAG" != v* ]]; then
   TAG="v$TAG"
@@ -69,6 +74,14 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# If bump/changelog fail, restore tracked files so we never leave a dirty,
+# uncommitted working tree behind. Cleared once the release commit lands.
+restore_tree() {
+  echo "Release failed before commit — restoring working tree."
+  git checkout -- . 2>/dev/null || true
+}
+trap restore_tree ERR
+
 node "$SCRIPT_DIR/bump-version.mjs" --version "$TAG"
 node "$SCRIPT_DIR/generate-changelog.mjs" --version "$TAG"
 
@@ -82,9 +95,17 @@ fi
 
 git commit -m "chore(release): $TAG"
 git tag -a "$TAG" -m "$TAG"
+trap - ERR  # commit + tag exist locally; do not restore tracked files past here
 
-git push origin "$BRANCH"
-git push origin "$TAG"
+if ! git push origin "$BRANCH"; then
+  echo "Push of '$BRANCH' failed. The release commit and tag exist locally."
+  echo "Fix the remote and re-run:  git push origin $BRANCH && git push origin $TAG"
+  exit 1
+fi
+if ! git push origin "$TAG"; then
+  echo "Push of tag '$TAG' failed. Re-run:  git push origin $TAG"
+  exit 1
+fi
 
 if command -v gh >/dev/null 2>&1; then
   if [[ "$NOTES_MODE" == "auto" ]]; then

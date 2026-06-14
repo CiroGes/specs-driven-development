@@ -2,6 +2,7 @@
 
 import fs from "node:fs";
 import { execSync } from "node:child_process";
+import { buildChangelogBody } from "./release-lib.mjs";
 
 const args = process.argv.slice(2);
 const versionFlag = args.indexOf("--version");
@@ -20,11 +21,23 @@ function sh(cmd) {
   return execSync(cmd, { encoding: "utf8" }).trim();
 }
 
-const allTags = sh("git tag --sort=-creatordate");
-const lastTag = allTags.split("\n").filter(Boolean)[0] || "";
+// Range base = nearest tag reachable from HEAD (not the newest tag globally, which
+// can pick up commits from another branch). Empty when there is no prior tag.
+let lastTag = "";
+try {
+  lastTag = sh("git describe --tags --abbrev=0");
+} catch {
+  lastTag = "";
+}
 const range = lastTag ? `${lastTag}..HEAD` : "HEAD";
 
-const raw = sh(`git log --pretty=format:%h%x09%s ${range}`);
+let raw;
+try {
+  raw = sh(`git log --pretty=format:%h%x09%s ${range}`);
+} catch (error) {
+  console.error(`Could not read git log (is this a git repo with commits?): ${error.message}`);
+  process.exit(1);
+}
 const lines = raw.split("\n").filter(Boolean);
 
 if (lines.length === 0) {
@@ -32,44 +45,7 @@ if (lines.length === 0) {
   process.exit(1);
 }
 
-const sections = {
-  feat: [],
-  fix: [],
-  perf: [],
-  refactor: [],
-  docs: [],
-  test: [],
-  chore: [],
-  other: [],
-};
-
-for (const line of lines) {
-  const [hash, subject] = line.split("\t");
-  const m = subject.match(/^([a-z]+)(\([^)]*\))?(!)?:\s(.+)$/i);
-  const key = m ? m[1].toLowerCase() : "other";
-  const text = m ? m[4] : subject;
-  const bucket = sections[key] ? key : "other";
-  sections[bucket].push(`- ${text} (${hash})`);
-}
-
-let body = `## ${tag} - ${today}\n\n`;
-const order = ["feat", "fix", "perf", "refactor", "docs", "test", "chore", "other"];
-const titles = {
-  feat: "Features",
-  fix: "Fixes",
-  perf: "Performance",
-  refactor: "Refactors",
-  docs: "Documentation",
-  test: "Tests",
-  chore: "Chores",
-  other: "Other",
-};
-
-for (const key of order) {
-  if (sections[key].length === 0) continue;
-  body += `### ${titles[key]}\n`;
-  body += `${sections[key].join("\n")}\n\n`;
-}
+const body = buildChangelogBody(tag, today, lines);
 
 let existing = "";
 if (fs.existsSync(changelogPath)) {

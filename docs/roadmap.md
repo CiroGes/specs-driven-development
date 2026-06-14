@@ -136,16 +136,19 @@ project is now safe and idempotent.
   `## Non-Goalsy` still does not satisfy `Non-Goals` (verified).
 - (see also: spec-quality-gates marker/backticks under Refinements above.)
 
-### Tier D — Release-manager scripts (medium) — VALIDATION PENDING
-Findings from static read; **confirm by running the release flow in a sandbox**
-before fixing:
-- `bump-version.mjs` throws on pre-release/build-metadata or missing `version`.
-- `generate-changelog.mjs`: truncates commit subjects containing a tab; uses the
-  newest **global** tag instead of the nearest ancestor (`git describe`); buckets
-  `build`/`ci`/`revert` into "other"; no BREAKING-CHANGE section.
-- `create-release.sh`: pushes before the GitHub-release step with no rollback;
-  partial state if a generator fails after `bump` already wrote files; no
-  `[[ -f "$NOTES_FILE" ]]` check.
+### Tier D — Release-manager scripts (medium) — DONE
+All findings reproduced in a git sandbox, then fixed (pure logic extracted to
+`release-lib.mjs`):
+- `bump-version.mjs`: tolerates a pre-release/build suffix on the current version
+  (bumps the core) and gives a friendly error on a missing `version`; an explicit
+  `--version` preserves its suffix; lockfile update is guarded.
+- `generate-changelog.mjs`: splits on the first tab only (subjects keep tabs); uses
+  `git describe --tags --abbrev=0` (nearest ancestor) for the range; buckets
+  `build`/`ci`/`revert` and surfaces a Breaking Changes section; git calls guarded.
+- `create-release.sh`: validates `--notes-file` exists; an ERR trap restores the
+  working tree if a generator fails before the commit; push failures print a clear
+  recovery hint. Validated end-to-end in a sandbox (bump→changelog→commit→tag→push,
+  clean tree, CHANGELOG buckets).
 
 ### Tier E — Process / distribution (high strategic value)
 - **E1 [high] — PARTIAL** local enforcement added via git hooks
@@ -162,11 +165,17 @@ before fixing:
   hard-fails on a shallow/partial checkout. (`install-hooks` was already a no-op
   outside a git work tree.)
 
-### Tier F — Root cause: test coverage
-The four CLI drivers, `validate-spec-structure`, `map-spec-to-code`, and all three
-release scripts have **no tests**. Most Tier C/D bugs (CRLF, tab, cpSync abort,
-semver) would have been caught by targeted tests. Worth doing in parallel with the
-fixes.
+### Tier F — Root cause: test coverage — LARGELY DONE
+Tests now cover the bug-prone pure logic and the installer:
+- spec scripts: `spec-scripts-empty`, `spec-scripts-robustness`, `spec-parsing`,
+  `check-spec-coverage` tests.
+- adapters/installer: `build-agent-adapters` (incl. the prepare-guard no-op),
+  `install-skeleton` (selective install, idempotency, gitignore merge).
+- release: `release-lib` unit tests (semver parse/bump, commit-line tab handling,
+  changelog buckets/breaking). `create-release.sh` orchestration is validated via a
+  git sandbox rather than a committed test (bash + `git push` + `gh` make a portable
+  unit test fragile) — noted here rather than silently skipped.
+Remaining low-value gaps: error branches of the CLI arg parsers.
 
 ### Deliberately not doing
 Cosmetics (40-char label collisions, UTC changelog date, `packageManager` field)
