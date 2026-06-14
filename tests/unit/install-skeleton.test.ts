@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, existsSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { mergeGitignore, CONSUMER_GITIGNORE } from "../../scripts/lib/gitignore.mjs";
 
 const INSTALLER = path.resolve("scripts/install-sdd-skeleton.mjs");
 
@@ -27,6 +28,12 @@ describe("install-sdd-skeleton --agents (selective projection)", () => {
       expect(existsSync(path.join(dir, "AGENTS.md"))).toBe(true);
       expect(existsSync(path.join(dir, "specs/templates/feature.spec.template.md"))).toBe(true);
       expect(existsSync(path.join(dir, "package.json"))).toBe(true);
+      // fresh-install-correctness: .gitignore created + specs/features scaffolded
+      expect(existsSync(path.join(dir, "specs/features/.gitkeep"))).toBe(true);
+      const gi = readFileSync(path.join(dir, ".gitignore"), "utf8");
+      expect(gi).toContain("node_modules/");
+      // target commits its adapters -> consumer .gitignore must not ignore them
+      expect(gi).not.toContain(".opencode");
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -43,5 +50,28 @@ describe("install-sdd-skeleton --agents (selective projection)", () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("mergeGitignore (consumer .gitignore)", () => {
+  it("creates a full ignore set when there is none", () => {
+    const result = mergeGitignore(null);
+    for (const entry of CONSUMER_GITIGNORE) expect(result).toContain(entry);
+    expect(mergeGitignore("")).toBe(mergeGitignore(null));
+  });
+
+  it("appends only missing entries and keeps existing lines intact", () => {
+    const existing = "node_modules/\nmy-secret.env\n";
+    const result = mergeGitignore(existing);
+    expect(result.startsWith(existing)).toBe(true); // user lines untouched
+    expect(result).toContain("my-secret.env");
+    expect(result).toContain("coverage/"); // a missing one was added
+    // an already-present entry is not duplicated
+    expect(result.match(/node_modules\//g)?.length).toBe(1);
+  });
+
+  it("is idempotent when all entries are already present", () => {
+    const full = mergeGitignore(null);
+    expect(mergeGitignore(full)).toBe(full);
   });
 });

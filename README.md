@@ -41,6 +41,7 @@ Why this matters:
 - `npm run lint`
 - `npm run validate:specs`
 - `npm run map:specs`
+- `npm run coverage:specs`
 
 ## Repository Structure
 
@@ -99,7 +100,7 @@ The installer is conservative by default:
   files that already exist are skipped with a warning)
 - It merges `package.json` and skips conflicting scripts/dependencies with a warning
 
-In this repository, the bundled demo project lives under `examples/sdd-demo/`. The local `validate:specs` and `map:specs` scripts are wired to that example tree. Installed projects still receive the default root-level commands for `specs/features/`, `src/`, and `tests/`.
+In this repository, the bundled demo project lives under `examples/sdd-demo/`. The local `validate:specs`, `map:specs`, and `coverage:specs` scripts are wired to that example tree. A freshly installed target starts with no features yet: those scripts and `npm test` pass with a "no features yet" notice, and stay green as you add your first feature under `specs/features/<feature>/`.
 
 ## Feature Delivery Checklist (SDD)
 
@@ -151,6 +152,7 @@ Use this checklist for every new feature.
 - [ ] `npm run lint`
 - [ ] `npm run validate:specs`
 - [ ] `npm run map:specs`
+- [ ] `npm run coverage:specs`
 
 ### 6) Closeout
 

@@ -76,8 +76,8 @@ if (feature && !existsSync(featureRoots[0])) {
 }
 
 if (featureRoots.length === 0) {
-  console.error(`No feature folders found under ${featuresDir}/*`);
-  process.exit(1);
+  console.log(`No features yet under ${featuresDir}/ — nothing to validate.`);
+  process.exit(0);
 }
 
 const missingFiles = [];

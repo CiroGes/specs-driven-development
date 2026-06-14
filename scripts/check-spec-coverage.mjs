@@ -36,8 +36,8 @@ const featureRoots = feature
   : listFeatureRoots(featuresDir);
 
 if (featureRoots.length === 0) {
-  console.error(`No feature folders found under ${featuresDir}/*`);
-  process.exit(1);
+  console.log(`No features yet under ${featuresDir}/ — nothing to check.`);
+  process.exit(0);
 }
 
 let anyUncovered = false;

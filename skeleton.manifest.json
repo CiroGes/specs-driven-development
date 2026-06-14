@@ -11,6 +11,7 @@
     "scripts/map-spec-to-code.mjs",
     "scripts/validate-spec-structure.mjs",
     "skeleton.manifest.json",
+    "specs/features/.gitkeep",
     "specs/templates",
     "tsconfig.json",
     "vitest.config.ts"

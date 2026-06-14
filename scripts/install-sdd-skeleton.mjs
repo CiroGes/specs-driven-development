@@ -9,6 +9,7 @@ import path from "node:path";
 import readline from "node:readline/promises";
 import { fileURLToPath } from "node:url";
 import { readCanonical, buildPlan, writeActions } from "./lib/agent-adapters.mjs";
+import { mergeGitignore } from "./lib/gitignore.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(__filename), "..");
@@ -123,6 +124,17 @@ function projectAgents(targetRoot, agents, force, warnings) {
   const { skipped } = writeActions(plan, targetRoot, { force });
   for (const item of skipped) {
     warnings.push(`Skipped existing adapter file "${item}"`);
+  }
+}
+
+function mergeTargetGitignore(targetRoot) {
+  const gitignorePath = path.join(targetRoot, ".gitignore");
+  const existing = existsSync(gitignorePath)
+    ? readFileSync(gitignorePath, "utf8")
+    : null;
+  const merged = mergeGitignore(existing);
+  if (merged !== existing) {
+    writeFileSync(gitignorePath, merged, "utf8");
   }
 }
 
@@ -263,6 +275,9 @@ async function main() {
 
     // Per-agent adapters (only the selected agents, projected from sdd/).
     projectAgents(targetRoot, agents, options.force, warnings);
+
+    // Consumer .gitignore (created if absent; missing lines appended otherwise).
+    mergeTargetGitignore(targetRoot);
 
     for (const entry of manifest.generate ?? []) {
       const generated = generateEntry(

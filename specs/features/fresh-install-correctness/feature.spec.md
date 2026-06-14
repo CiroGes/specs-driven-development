@@ -1,8 +1,8 @@
 # Feature: fresh-install-correctness
 
-> Status: spec-authoring phase. Acceptance criteria in EARS (dogfoods the
-> spec-quality-gates convention). Scope = hardening backlog Tier A (A3 rejected:
-> typecheck verified green on a fresh target).
+> Status: implemented. Acceptance criteria in EARS (dogfoods the spec-quality-gates
+> convention). Scope = hardening backlog Tier A (A3 rejected: typecheck verified
+> green on a fresh target). Verified: fresh default install passes all four commands.
 
 ## Context
 

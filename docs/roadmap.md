@@ -87,9 +87,11 @@ Small improvements to already-delivered features (not full Tier-2 items):
 Senior-engineer audit of the whole repo. Grouped by tier; severity in brackets.
 Ordered by value × effort, filtered to preserve "easy-to-use". Tier A is next.
 
-### Tier A — Fresh-install correctness (high value, low effort) — NEXT
-A default install (no `--with-examples`) ships a target whose own verification
-commands are red until the user hand-creates a feature. Verified empirically.
+### Tier A — Fresh-install correctness (high value, low effort) — DONE
+Delivered by `specs/features/fresh-install-correctness/`: a default install is now
+green out-of-the-box (verified end-to-end). A default install previously shipped a
+target whose own verification commands were red until the user hand-created a
+feature.
 - **A1 [high]** `validate:specs` / `coverage:specs` / `map:specs` exit 1 on zero
   features. Treat "0 features" as a **pass + notice** (exit 0). Consistent with the
   existing backward-compatible-gate principle ("no AC ids = no-op pass").

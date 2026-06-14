@@ -86,10 +86,8 @@ if (feature && !existsSync(specPaths[0])) {
 }
 
 if (specPaths.length === 0) {
-  console.error(
-    "No feature specs found under specs/features/*/feature.spec.md"
-  );
-  process.exit(1);
+  console.log(`No features yet under ${featuresDir}/ — nothing to map.`);
+  process.exit(0);
 }
 
 const allMissing = [];
