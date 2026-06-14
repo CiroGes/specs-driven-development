@@ -1,4 +1,5 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
+import path from "node:path";
 import { findClarificationMarkers } from "./lib/spec-parsing.mjs";
 
 const REQUIRED_SECTION_TITLES = [
@@ -52,7 +53,7 @@ function listFeatureRoots(featuresDir) {
 
   return readdirSync(featuresDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
-    .map((entry) => `${featuresDir}/${entry.name}`);
+    .map((entry) => path.join(featuresDir, entry.name));
 }
 
 function escapeRegex(value) {
@@ -61,13 +62,16 @@ function escapeRegex(value) {
 
 function hasRequiredSection(specContent, title) {
   // Match exact H2 headings line-by-line to avoid accidental multiline matches.
-  const sectionPattern = new RegExp(`^##\\s+${escapeRegex(title)}\\s*$`, "m");
+  // Allow an optional qualifier after the canonical title, e.g.
+  // "## Non-Goals (out of scope)". The trailing part must start with whitespace,
+  // so "## Goalsxyz" still does NOT match "Goals".
+  const sectionPattern = new RegExp(`^##\\s+${escapeRegex(title)}(?:\\s.*)?$`, "m");
   return sectionPattern.test(specContent);
 }
 
 const { feature, featuresDir } = parseArgs(process.argv.slice(2));
 const featureRoots = feature
-  ? [`${featuresDir}/${feature}`]
+  ? [path.join(featuresDir, feature)]
   : listFeatureRoots(featuresDir);
 
 if (feature && !existsSync(featureRoots[0])) {
@@ -86,9 +90,9 @@ const clarificationWarnings = [];
 
 for (const featureRoot of featureRoots) {
   const requiredFiles = [
-    `${featureRoot}/feature.spec.md`,
-    `${featureRoot}/tasks.md`,
-    `${featureRoot}/acceptance.md`,
+    path.join(featureRoot, "feature.spec.md"),
+    path.join(featureRoot, "tasks.md"),
+    path.join(featureRoot, "acceptance.md"),
   ];
 
   for (const file of requiredFiles) {
@@ -97,7 +101,7 @@ for (const featureRoot of featureRoots) {
     }
   }
 
-  const specPath = `${featureRoot}/feature.spec.md`;
+  const specPath = path.join(featureRoot, "feature.spec.md");
   if (!existsSync(specPath)) {
     continue;
   }

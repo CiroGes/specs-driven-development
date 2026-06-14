@@ -1,4 +1,5 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
+import path from "node:path";
 import { computeCoverage } from "./lib/spec-parsing.mjs";
 
 function parseArgs(argv) {
@@ -26,13 +27,13 @@ function listFeatureRoots(featuresDir) {
   if (!existsSync(featuresDir)) return [];
   return readdirSync(featuresDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
-    .map((entry) => `${featuresDir}/${entry.name}`)
+    .map((entry) => path.join(featuresDir, entry.name))
     .sort();
 }
 
 const { feature, featuresDir } = parseArgs(process.argv.slice(2));
 const featureRoots = feature
-  ? [`${featuresDir}/${feature}`]
+  ? [path.join(featuresDir, feature)]
   : listFeatureRoots(featuresDir);
 
 if (featureRoots.length === 0) {
@@ -44,10 +45,10 @@ let anyUncovered = false;
 let missingFiles = false;
 
 for (const root of featureRoots) {
-  const name = root.split("/").pop();
-  const specPath = `${root}/feature.spec.md`;
-  const tasksPath = `${root}/tasks.md`;
-  const acceptancePath = `${root}/acceptance.md`;
+  const name = path.basename(root);
+  const specPath = path.join(root, "feature.spec.md");
+  const tasksPath = path.join(root, "tasks.md");
+  const acceptancePath = path.join(root, "acceptance.md");
 
   if (!existsSync(specPath) || !existsSync(tasksPath) || !existsSync(acceptancePath)) {
     console.error(`Feature ${name}: missing spec/tasks/acceptance file(s) — skipped.`);

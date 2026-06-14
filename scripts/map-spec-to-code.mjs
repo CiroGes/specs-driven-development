@@ -42,8 +42,26 @@ function listFeatureSpecPaths(featuresDir) {
 
   return readdirSync(featuresDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
-    .map((entry) => `${featuresDir}/${entry.name}/feature.spec.md`)
-    .filter((path) => existsSync(path));
+    .map((entry) => path.join(featuresDir, entry.name, "feature.spec.md"))
+    .filter((specPath) => existsSync(specPath));
+}
+
+// Return only the body of the `## Traceability` section (until the next H2 or EOF).
+// Traceability links live there; scanning the whole doc would treat hypothetical
+// paths mentioned in prose as hard links and fail the build on them.
+function extractTraceabilitySection(content) {
+  const lines = content.split("\n");
+  let inSection = false;
+  const body = [];
+  for (const line of lines) {
+    if (/^##\s+Traceability(?:\s.*)?$/.test(line)) {
+      inSection = true;
+      continue;
+    }
+    if (inSection && /^##\s+/.test(line)) break;
+    if (inSection) body.push(line);
+  }
+  return body.join("\n");
 }
 
 function isConcreteRepoPath(value) {
@@ -77,7 +95,7 @@ function deriveProjectRoot(featuresDir) {
 const { feature, featuresDir } = parseArgs(process.argv.slice(2));
 const projectRoot = deriveProjectRoot(featuresDir);
 const specPaths = feature
-  ? [`${featuresDir}/${feature}/feature.spec.md`]
+  ? [path.join(featuresDir, feature, "feature.spec.md")]
   : listFeatureSpecPaths(featuresDir);
 
 if (feature && !existsSync(specPaths[0])) {
@@ -96,8 +114,9 @@ let totalTraceablePaths = 0;
 
 for (const specPath of specPaths) {
   const content = readFileSync(specPath, "utf8");
-  const pathMatches = [...content.matchAll(/`([^`\n]+)`/g)].map((match) =>
-    match[1].trim()
+  const traceabilitySection = extractTraceabilitySection(content);
+  const pathMatches = [...traceabilitySection.matchAll(/`([^`\n]+)`/g)].map(
+    (match) => match[1].trim()
   );
   const traceablePaths = pathMatches.filter(isConcreteRepoPath);
 

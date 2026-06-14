@@ -126,13 +126,14 @@ project is now safe and idempotent.
   actually lost) — the real risk was latent (future frontmatter transforms would
   silently no-op on CRLF) plus mixed line endings (incl. CRLF shebangs in `.sh`).
   Fixed by `normalizeText` (strip BOM + CRLF→LF) at read time in `readCanonical`.
-- **C2 [low]** POSIX-only path handling (`split("/").pop()`, hardcoded `/`) in the
-  three spec scripts → use `path.basename`/`path.join`.
-- **C3 [med]** `map-spec-to-code` treats any backticked `src/|tests/|specs/` path
-  anywhere in the doc as a hard traceability link → hypothetical mentions break the
-  build. Scope extraction to the Traceability section.
-- **C4 [med]** `validate-spec-structure` requires an exact H2 title → e.g.
-  `## Non-Goals (out of scope)` fails. Allow trailing text after the canonical title.
+- **C2 [low] — DONE** POSIX-only path handling replaced with `path.join` /
+  `path.basename` in the three spec scripts (no behavior change on POSIX).
+- **C3 [med] — DONE** `map-spec-to-code` now scopes traceability-link extraction to
+  the `## Traceability` section, so a hypothetical `src/...` mentioned in prose no
+  longer fails the build (verified).
+- **C4 [med] — DONE** `validate-spec-structure` allows a trailing qualifier after a
+  canonical H2 title (`## Non-Goals (out of scope)`), with a word-boundary guard so
+  `## Non-Goalsy` still does not satisfy `Non-Goals` (verified).
 - (see also: spec-quality-gates marker/backticks under Refinements above.)
 
 ### Tier D — Release-manager scripts (medium) — VALIDATION PENDING
