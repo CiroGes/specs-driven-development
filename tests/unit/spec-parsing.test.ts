@@ -44,6 +44,13 @@ describe("findClarificationMarkers", () => {
       "[NEEDS CLARIFICATION: which env?]",
     ]);
   });
+
+  it("preserves backtick content inside a live marker (detect-first, no blanking)", () => {
+    const text = "Open: [NEEDS CLARIFICATION: use `npm` or `pnpm`?]";
+    expect(findClarificationMarkers(text)).toEqual([
+      "[NEEDS CLARIFICATION: use `npm` or `pnpm`?]",
+    ]);
+  });
 });
 
 describe("stripCode", () => {

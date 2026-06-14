@@ -16,10 +16,15 @@ function parseArgs(argv) {
   const options = {
     feature: null,
     featuresDir: "specs/features",
+    strict: false,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
+    if (arg === "--strict") {
+      options.strict = true;
+      continue;
+    }
     if (arg === "--feature" || arg === "-f") {
       options.feature = argv[index + 1] ?? null;
       index += 1;
@@ -69,7 +74,7 @@ function hasRequiredSection(specContent, title) {
   return sectionPattern.test(specContent);
 }
 
-const { feature, featuresDir } = parseArgs(process.argv.slice(2));
+const { feature, featuresDir, strict } = parseArgs(process.argv.slice(2));
 const featureRoots = feature
   ? [path.join(featuresDir, feature)]
   : listFeatureRoots(featuresDir);
@@ -119,9 +124,13 @@ for (const featureRoot of featureRoots) {
 }
 
 if (clarificationWarnings.length > 0) {
-  console.warn("Warning: unresolved [NEEDS CLARIFICATION] markers (non-blocking):");
+  const label = strict
+    ? "Error: unresolved [NEEDS CLARIFICATION] markers (--strict):"
+    : "Warning: unresolved [NEEDS CLARIFICATION] markers (non-blocking):";
+  const log = strict ? console.error : console.warn;
+  log(label);
   for (const item of clarificationWarnings) {
-    console.warn(`- ${item.marker} (in ${item.specPath})`);
+    log(`- ${item.marker} (in ${item.specPath})`);
   }
 }
 
@@ -139,7 +148,11 @@ if (missingSections.length > 0) {
   }
 }
 
-if (missingFiles.length > 0 || missingSections.length > 0) {
+if (
+  missingFiles.length > 0 ||
+  missingSections.length > 0 ||
+  (strict && clarificationWarnings.length > 0)
+) {
   process.exit(1);
 }
 

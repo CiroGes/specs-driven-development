@@ -7,11 +7,16 @@ import path from "node:path";
 const VALIDATE = path.resolve("scripts/validate-spec-structure.mjs");
 const MAP = path.resolve("scripts/map-spec-to-code.mjs");
 
-function run(script: string, dir: string, feature: string): { code: number; out: string } {
+function run(
+  script: string,
+  dir: string,
+  feature: string,
+  extra: string[] = []
+): { code: number; out: string } {
   try {
     const out = execFileSync(
       "node",
-      [script, "--features-dir", dir, "--feature", feature],
+      [script, "--features-dir", dir, "--feature", feature, ...extra],
       { encoding: "utf8", stdio: "pipe" }
     );
     return { code: 0, out };
@@ -65,6 +70,25 @@ describe("C4: validate-spec-structure section-title tolerance", () => {
       const { code, out } = run(VALIDATE, root, "f");
       expect(code).toBe(1);
       expect(out).toContain("Non-Goals");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("validate-spec-structure --strict (clarification markers)", () => {
+  it("warns (exit 0) by default but fails (exit 1) with --strict on an open marker", () => {
+    const root = mkdtempSync(path.join(tmpdir(), "sdd-strict-"));
+    try {
+      writeFeature(
+        root,
+        "f",
+        BODY("Non-Goals", "Open: [NEEDS CLARIFICATION: which env?]", "- x")
+      );
+      expect(run(VALIDATE, root, "f").code).toBe(0); // default: warn, non-blocking
+      const strict = run(VALIDATE, root, "f", ["--strict"]);
+      expect(strict.code).toBe(1);
+      expect(strict.out).toContain("NEEDS CLARIFICATION");
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

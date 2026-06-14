@@ -4,8 +4,7 @@
 
 /**
  * Remove fenced code blocks (```...```) and inline code spans (`...`) from
- * markdown text. Used so that documentation *mentions* of a token are not
- * mistaken for live content.
+ * markdown text.
  * @param {string} text
  * @returns {string}
  */
@@ -16,15 +15,47 @@ export function stripCode(text) {
 }
 
 /**
- * Find live `[NEEDS CLARIFICATION ...]` markers in markdown prose. Markers inside
- * inline code or fenced code blocks are treated as documentation and ignored.
+ * Character ranges [start, end) covered by fenced code blocks or inline code
+ * spans, so callers can tell whether a position sits inside code.
  * @param {string} text
- * @returns {string[]} the full marker strings found in prose
+ * @returns {Array<[number, number]>}
+ */
+function codeRanges(text) {
+  const ranges = [];
+  let m;
+  const fence = /```[\s\S]*?```/g;
+  while ((m = fence.exec(text)) !== null) {
+    ranges.push([m.index, m.index + m[0].length]);
+  }
+  const inline = /`[^`\n]*`/g;
+  while ((m = inline.exec(text)) !== null) {
+    const start = m.index;
+    if (ranges.some(([s, e]) => start >= s && start < e)) continue; // inside a fence
+    ranges.push([start, start + m[0].length]);
+  }
+  return ranges;
+}
+
+/**
+ * Find live `[NEEDS CLARIFICATION ...]` markers. Markers are detected first, then
+ * those whose `[` sits inside an inline-code span or fenced block are excluded as
+ * documentation. (Detecting first preserves marker content — e.g. backticks inside
+ * a live marker — and avoids dropping a marker when a stray backtick elsewhere
+ * would otherwise mask it.)
+ * @param {string} text
+ * @returns {string[]} the live marker strings, content intact
  */
 export function findClarificationMarkers(text) {
-  const prose = stripCode(text);
-  const matches = prose.match(/\[NEEDS CLARIFICATION\b[^\]]*\]/g);
-  return matches ? matches.map((m) => m.trim()) : [];
+  const ranges = codeRanges(text);
+  const markers = [];
+  const re = /\[NEEDS CLARIFICATION\b[^\]]*\]/g;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const start = m.index;
+    const inCode = ranges.some(([s, e]) => start >= s && start < e);
+    if (!inCode) markers.push(m[0].trim());
+  }
+  return markers;
 }
 
 /**

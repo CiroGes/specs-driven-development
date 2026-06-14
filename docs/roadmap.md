@@ -72,15 +72,15 @@ Suggested order. None started.
 
 Small improvements to already-delivered features (not full Tier-2 items):
 
-- **spec-quality-gates — marker detection vs. backticks.** A live
-  `[NEEDS CLARIFICATION]` marker that contains inline code (backticks) is mangled:
-  `stripCode` runs first and consumes part of the marker, so it is not reported.
-  Surfaced while dogfooding `agent-adapter-projection`. Fix options: state in the
-  convention that a live marker must not contain backticks, and/or make the
-  detector tolerant of inline code *inside* an otherwise-live marker. Low effort.
-- **spec-quality-gates — optional `--strict` for `validate:specs`.** Let
-  `validate:specs` fail (not just warn) on unresolved markers behind a flag, so the
-  `/sdd-verify` block can be enforced by script instead of command-level discretion.
+- **spec-quality-gates — marker detection vs. backticks. — DONE** Rewrote
+  `findClarificationMarkers` to detect markers first, then exclude those whose `[`
+  sits inside an inline-code span / fenced block (instead of stripping all code
+  first). Preserves backtick content inside a live marker and removes the
+  stray-backtick false-negative.
+- **spec-quality-gates — `--strict` for `validate:specs`. — DONE** `validate:specs
+  --strict` exits non-zero on unresolved markers (plain run still warns, for
+  iterative authoring). `/sdd-verify` now runs it with `--strict`, so the
+  marker-blocking gate is script-enforced rather than command-level discretion.
 
 ## Hardening backlog (repo audit 2026-06)
 
